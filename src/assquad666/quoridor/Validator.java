@@ -1,4 +1,4 @@
-package quoridor;
+package assquad666.quoridor;
 
 public class Validator {
 

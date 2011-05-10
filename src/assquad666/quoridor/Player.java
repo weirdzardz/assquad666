@@ -1,5 +1,5 @@
 package assquad666.quoridor;
 
-public class Model {
+public abstract class Player {
 
 }

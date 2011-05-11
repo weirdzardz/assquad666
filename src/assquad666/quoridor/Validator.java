@@ -12,6 +12,19 @@ public class Validator {
 		// TODO
 	}
 
+	public boolean isInBoard(String move){
+		
+		return false;
+	}
+	
+	
+	public boolean isAdjacent(String move){
+		
+		return false;
+	}
+	
+	
+	
 	/**
 	 * Check the validity of a given sequence of moves.
 	 * The sequence is valid if and only if each (space separated)
@@ -45,19 +58,19 @@ public class Validator {
 					} else {
 						if ((i < (moves.length() - 1)) && (moves.charAt(i+1) == 'h' || moves.charAt(i+1) == 'v')) {
 							if (i % 2 == 0) {
-								temp.placeWall(c,lastc - 'a', moves.charAt(i+1), temp.playerOne());
+							//	temp.placeWall(c,lastc - 'a', moves.charAt(i+1), temp.playerOne());
 							} else {
-								temp.placeWall(c,lastc - 'a', moves.charAt(i+1), temp.playerTwo());
+							//	temp.placeWall(c,lastc - 'a', moves.charAt(i+1), temp.playerTwo());
 							}
 							i++;
 						} else {
 							if (i % 2 == 0) {
-								temp.move(c,(lastc - 'a'), temp.playerOne());
+							//	temp.move(c,(lastc - 'a'), temp.playerOne());
 							} else {
-								temp.move(c,(lastc - 'a'), temp.playerTwo());
+							//	temp.move(c,(lastc - 'a'), temp.playerTwo());
 							}
 						}
-						valid = temp.valid();
+					//	valid = temp.valid();
 						
 					}
 				} else {

@@ -5,10 +5,16 @@ import java.util.LinkedList;
 public class Display {
 
 	public static LinkedList<String> strings = new LinkedList<String>();
+	public static Game myGame;
+	
 	
 	public static void main(String[] args){
 		
-		display(null);
+		myGame = new Game();
+		myGame.initGame();
+		
+		
+		display(myGame);
 		
 	}
 	
@@ -35,15 +41,21 @@ public class Display {
 			}
 			strings.add(line);
 			if(i < 9){
-				temp = "     ";
 				line = (i+1)+ "  |";
-				for(k=0;k<7;k++){
-					//TODO ADD the PAWNS
-					
+				for(k=0;k<9;k++){
+					//TODO ADD the PAWNS and vertical walls
+
+					if(false) //check if pawn
+						temp = " X ";
+					else
+						temp = "   ";
 					
 					line +=temp;
+					if(false || k == 8) //check vertical wall
+						line += "|";
+					else
+						line += " ";
 				}
-				line += "|";
 				strings.add(line);
 			}
 		}

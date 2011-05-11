@@ -15,9 +15,27 @@ public class Game {
 	 */
 	Player playerOne;
 	Player playerTwo;
+	
+	Pawn plOne;
+	Pawn plTwo;
+	
 	int size = 9;
 	
-	LinkedList<Wall> walls;
+	LinkedList<Wall> walls = new LinkedList<Wall>();
+	
+	public Game(/*String pl1, String pl2*/){
+		
+		
+		
+	}
+	
+	
+	public void initGame() {
+		plOne = new Pawn('e' - 'a', 1);
+		plTwo = new Pawn('e' - 'a', 9);	
+	}
+	
+	
 	
 	public int width(){	
 		return size;

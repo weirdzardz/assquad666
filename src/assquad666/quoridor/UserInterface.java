@@ -43,11 +43,7 @@ public class UserInterface {
 		return null;
 	}
 	
-	// to put in dispay???
-	public void displayGame(Game game){
-		
-		
-	}
+
 	
 	public Game makeAMove(Command move){
 		

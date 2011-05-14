@@ -1,12 +1,12 @@
 package assquad666.quoridor;
 
 
-public class Pawn {
+public class Point {
 
 	
 	public int x, y;
 
-	public Pawn(int x, int y)
+	public Point(int x, int y)
 	{
 		this.x = x;
 		this.y = y;
@@ -15,11 +15,11 @@ public class Pawn {
 
 	
 	public int let(){
-		return x;
+		return this.x;
 	}
 	
-		public int num(){
-		return y;
+	public int num(){
+		return this.y;
 	}
 	
 	@Override

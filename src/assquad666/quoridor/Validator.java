@@ -1,5 +1,24 @@
 package assquad666.quoridor;
 
+/**
+ * Validator is in charge of deciding if a move or a serie of moves is valid according to the games' rules. 
+ * 
+ * <h2>Goals</h2>
+ * <ul>
+ * <li>Given a move and a Game state, or a serie of moves, decides if it is Valid or not.</li>
+ * <li>Storing a command.</li>
+ * </ul> 
+ * 
+ * <h2>Implementation</h2>
+ * <ul>
+ * <li>To do. Was half implemented during lab10, but conditions and arguments changed since then.</li>
+ * </ul>
+ * 
+ * 
+ * @author Sacha BŽraud <sacha.beraud@gmail.com>
+ *
+ */
+
 public class Validator {
 
 	// TODO complete this class using your project code
@@ -12,13 +31,34 @@ public class Validator {
 		// TODO
 	}
 
-	public boolean isInBoard(String move){
+	
+	/**
+	 * Checks if a wall placement is valid or not.
+	 * @param move A move (wall placement) to be checked for validity.
+	 * @return True if this wall placement is valid according to Game state, False if not.
+	 */
+	public boolean isValidWallPlace(Move move){
 		
 		return false;
 	}
 	
+	/**
+	 * Checks if a pawn move is a valid jump move.
+	 * @param move A move to be checked for validity.
+	 * @return True if this move is a valid jump, False if not.
+	 */
+	public boolean isValidJump(Move move){
+		return false;
+	}
 	
-	public boolean isAdjacent(String move){
+	
+	
+	/**
+	 * Checks if a Pawn move is adjacent to its previous position.
+	 * @param move A move to be checked for validity.
+	 * @return True if this move is adjacent to pawn's previous position, False if not.
+	 */
+	public boolean isAdjacent(Move move){
 		
 		return false;
 	}
@@ -42,8 +82,7 @@ public class Validator {
 		
 		Game temp = new Game();
 		
-		int width = temp.width();
-		int height = temp.height();
+/*
 		
 		for (int i = 0; i < moves.length() && valid == true; i++) {
 			c = moves.charAt (i);
@@ -81,7 +120,8 @@ public class Validator {
 		}
 	
 		
-		return valid ;
+		return valid ;*/
+		return false;
 	}
 
 }

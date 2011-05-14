@@ -4,9 +4,24 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
- * A command from the input.
+ * Command is in charge of parsing a String of input and storing it into itself. 
  * 
- * @author Sachou
+ * <h2>Goals</h2>
+ * <ul>
+ * <li>Parsing Input.</li>
+ * <li>Storing a command.</li>
+ * </ul> 
+ * 
+ * <h2>Implementation</h2>
+ * <ul>
+ * <li>Command's constructor needs a String as an argument.</li>
+ * <li>This String is parsed and stored as different variables right away.</li>
+ * <li>There are 5 types of Commands: new, load, save, new(with moves), a move.</li>
+ * <li>A Command can be invalid in which case it will be ignored by the class creating it.</li>
+ * </ul>
+ * 
+ * 
+ * @author Sacha BŽraud <sacha.beraud@gmail.com>
  *
  */
 public class Command {
@@ -31,25 +46,45 @@ public class Command {
 		
 	LinkedList<Move> moves = new LinkedList<Move>();
 	
+	/**
+	 * The type of Command (new, load, save, new(with moves) or a move).
+	 * @return The type of Command (new, load, save, new(with moves) or a move). 
+	 */
 	public int type(){
 		return type;
 	}
 	
+	/**
+	 * The name of the file to be loaded if it is a load Command.
+	 * @return The name of the file to be loaded if it is a load Command.
+	 */
 	public String fileName(){
 		return fileName;
 	}
 	
+	/**
+	 * The move to be done if it is a move Command.
+	 * @return The move to be done if it is a move Command.
+	 */
 	public Move move(){
 		assert moves != null;
 		return moves.getFirst();
 	}
 	
+	/**
+	 * The list of the moves to be done if it is a new(with moves) Command.
+	 * @return The list of the moves to be done if it is a new(with moves) Command.
+	 */
 	public LinkedList<Move> moves(){
 		
 		return moves;
 	}
 	
 	
+	/**
+	 * Constructor function. Parses and stores input.
+	 * @param input The String input into stdin that this class has to parse and store.
+	 */
 	public Command(String input){
 		char c;
 		char lastc = ' ';
@@ -87,7 +122,7 @@ public class Command {
 			c = input.charAt(i);
 		//	System.out.println("les characters: "+lastlastc+" "+lastc+" "+c);
 			if(Character.isLetter(lastlastc) && ((lastlastc - 'a') < size) 
-					&& Character.isDigit(lastc) && (lastc - '0' < size)){
+					&& Character.isDigit(lastc) && (lastc - '0' <= size && lastc - '0' >0)){
 				if(c == 'h'){
 					this.moves.add(new Move(lastlastc - 'a', lastc - '0', HORIZONTAL));
 				} else if (c == 'v'){
@@ -105,7 +140,7 @@ public class Command {
 		//	System.out.println("les characters: "+lastlastc+" "+lastc+" "+c);
 
 		if(Character.isLetter(lastlastc) && ((lastlastc - 'a') < size) 
-				&& Character.isDigit(lastc) && (lastc - '0' < size)){
+				&& Character.isDigit(lastc) && (lastc - '0' <= size && lastc - '0' > 0)){
 			this.moves.add(new Move(lastlastc - 'a', lastc - '0', PAWN));
 			movCount++;
 		}

@@ -25,6 +25,7 @@ public abstract class Player {
 	Point pawn;
 	String name;
 	
+	
 	/**
 	 * A Point representing the coordinates of the Pawn of a Player.
 	 * @return A Point representing the coordinates of the Pawn of a Player.

@@ -2,6 +2,7 @@ package quoridor;
 
 import java.util.LinkedList;
 import java.util.Scanner;
+
 import util.Two;
 
 
@@ -48,12 +49,8 @@ public class Game {
 	/**
 	 * Players playing the Game
 	 */
-//	public final Two <Player> players;
-	Player playerOne;
-	Player playerTwo;
-	
-	Point plOne;
-	Point plTwo;
+	public final Two <Player> players;
+	public Player myTurn;
 	
 	int size = 9;
 	
@@ -61,12 +58,24 @@ public class Game {
 	LinkedList<Move> moves = new LinkedList<Move>();
 	
 	
+    public Two <Player> players ()
+    {
+        return players;
+    }
+	
+    public Player myTurn(){    	
+    	return myTurn;
+    }
+    
+    public void changeTurn(){
+    	myTurn = players.other(myTurn);
+    }
+    
 	/**
-	 * Constructor, will probably create the players based on names sent by factory, or something like that.
+	 * Constructor, creates the players based on names sent by factory.
 	 */
-	public Game(/*String pl1, String pl2*/){
-		
-		
+	public Game(Two<Player> players){
+		this.players = players;
 	}
 	
 	
@@ -74,20 +83,29 @@ public class Game {
 	 * Initializes the Game based on information from a load file or input on the command line.
 	 */
 	public void initGame() {
-		plOne = new Point('e' - 'a', 1);
-		plTwo = new Point('e' - 'a', 9);	
+		players._1.pawn = new Point('e' - 'a', 9);
+		players._2.pawn = new Point('e' - 'a', 1);
+		myTurn = players._1();
 	}
 	
 	
 	/**
-	 * Checks if a Pawn is at coordinates x,y. In the future, will probably return a Player, or null.
+	 * Checks if a Player's Pawn is at coordinates x,y.
 	 * @param x the letter coordinate on the board.
 	 * @param y the number coordinate on the board.
-	 * @return True if a Pawn is at coordinates x,y, false otherwise.
+	 * @return The Player whose Pawn is at (x,y).
 	 */
-	public boolean isPawnAt(int x, int y){	
-		return (plOne.let() == x && plOne.num() == y) || (plTwo.let() == x && plTwo.num() == y);
+	public Player pawnAt(int x, int y){
+		
+		if(players._1.pawn.let() == x && players._1.pawn.num() == y){
+			return players._1();
+		} else if(players._2.pawn.let() == x && players._2.pawn.num() == y) {
+			return players._2();
+		} else {
+			return null;
+		}
 	}
+	
 	
 	/**
 	 * Checks if a wall is at coordinates x,y and with direction dir.
@@ -139,36 +157,30 @@ public class Game {
 	 * Checks if a game is over, soon to be done.
 	 * @return True if a game is over (pos of player at the otherside of the board blah blah...), false if not.
 	 */
-	public boolean isOver(){
-		
-		return false;
+	public boolean isOver(){	
+		return (players._1().pawn().num() == 1 || players._2().pawn().num() == 9);
 	}
 	
 	/**
 	 * @return The winner of the Game.
 	 */
 	public Player winner(){
-		
-		return null;
+		if(players._1().pawn().num() == 1){
+			return players._1();
+		} else {
+			return players._2();
+		}
 	}
 	
 	/**
 	 * @return The loser of the Game.
 	 */
 	public Player loser(){
-		
-		return null;
-	}
-	
-	// Two <Players> being implemented so might just disappear.
-	public Player playerOne(){
-		
-		return this.playerOne;
-	}
-	
-	public Player playerTwo(){
-		
-		return this.playerTwo;
+		if(players._1().pawn().num() == 1){
+			return players._2();
+		} else {
+			return players._1();
+		}
 	}
 
 	/**
@@ -183,7 +195,7 @@ public class Game {
 		} else{
 			placeWall(move);
 		}
-		
+		changeTurn();
 	}
 
 	/**
@@ -192,7 +204,7 @@ public class Game {
 	 * @param p The player making the move.
 	 */
 	public void placePawn(Move move, Player p){
-		plOne = new Point(move.coord().let(), move.coord().num());
+		p.pawn = new Point(move.coord().let(), move.coord().num());
 	}
 	
 	
@@ -222,9 +234,10 @@ public class Game {
 	public void play() {
 		
 		initGame();
+		display();
+		System.out.println("Make a move "+ myTurn().name +": ");
 		while(!isOver()){
 			
-			display();
 			Command command = new Command(getInput());
 			
 			while(command.type() == INVALID) {
@@ -245,16 +258,25 @@ public class Game {
 				
 			} else if(command.type() == MOVE){
 				//if(isValid(command.move(),null))
-				move(command.move(), null); //null =>player who's turn it is
-				moves.add(command.move());
+				Validator v = new Validator(this);
+				if(v.checkMove(command.move(), myTurn())){
+					move(command.move(), myTurn()); //null =>player who's turn it is
+					moves.add(command.move());
+				} else {
+					System.out.println("Invalid move noob, try again: ");
+
+				}
+				
 				
 			} else if(command.type() == SAVE_GAME){
 				save();
 				return; // a retirer
 			}
+			display();
+			System.out.println("Make a move "+ myTurn().name +": ");
 		}
 		
-		System.out.println("Game Over. Winner is blahblah");
+		System.out.println("GG. Winner is " + winner().name + ".");
 	}
 	
 	
@@ -268,7 +290,7 @@ public class Game {
 		for(Move myMove: moves){
 			line +=  myMove.toString() + " ";
 		}
-		System.out.println(line);
+		System.out.println(line); // to change to print to file and it's GG, I think
 
 	}
 
@@ -316,10 +338,9 @@ public class Game {
 			if(i < 9){
 				line = (i+1)+ "  |";  //print number index
 				for(k=0;k<9;k++){
-					//TODO ADD the PAWNS and vertical walls
-
-					if(isPawnAt(k,i+1)) //check if pawn  at (k,i)
-						if(true) // check if player 1
+					Player p = pawnAt(k,i+1);
+					if( p != null) //check if pawn at (k,i)
+						if(p == players._1()) // check if player 1
 							temp = " X ";
 						else  // else player 2
 							temp = " O ";
@@ -327,7 +348,7 @@ public class Game {
 						temp = "   ";
 					
 					line +=temp;
-					if(isWallAt(k+1,i+1,VERTICAL) || k == 8) //check vertical wall
+					if(isWallAt(k+1,i+1,VERTICAL) || k == 8) //check if vertical wall
 						line += "|";
 					else
 						line += " ";
@@ -335,6 +356,8 @@ public class Game {
 				strings.add(line);
 			}
 		}
+		
+		//Actually prints everything
 		for(String myString : strings) {
 			System.out.println(myString);
 		}	

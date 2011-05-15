@@ -1,5 +1,9 @@
 package quoridor;
 
+import java.util.LinkedList;
+
+import util.Two;
+
 /**
  * Validator is in charge of deciding if a move or a serie of moves is valid according to the games' rules. 
  * 
@@ -27,43 +31,28 @@ public class Validator {
 	// you may add extra fields and methods to this class
 	// but the ProvidedTests code will only call the specified methods
 	
-	public Validator () {
-		// TODO
-	}
-
+	Game game;
+	Player tempPl1 = new Human("Player 1");
+	Player tempPl2 = new Human("Player 2");
 	
-	/**
-	 * Checks if a wall placement is valid or not.
-	 * @param move A move (wall placement) to be checked for validity.
-	 * @return True if this wall placement is valid according to Game state, False if not.
-	 */
-	public boolean isValidWallPlace(Move move){
-		
-		return false;
+	public Validator (Game game) {
+		if (game == null){
+			game = new Game(Two.two(tempPl1, tempPl2));
+		} else{
+			this.game = game;
+		}
 	}
-	
-	/**
-	 * Checks if a pawn move is a valid jump move.
-	 * @param move A move to be checked for validity.
-	 * @return True if this move is a valid jump, False if not.
-	 */
-	public boolean isValidJump(Move move){
-		return false;
-	}
-	
 	
 	
 	/**
-	 * Checks if a Pawn move is adjacent to its previous position.
-	 * @param move A move to be checked for validity.
-	 * @return True if this move is adjacent to pawn's previous position, False if not.
+	 * Check the validity of a move in a particular game state stored in this Validator.
+	 * @param move the move to be checked for validity
+	 * @return validity of this move.
 	 */
-	public boolean isAdjacent(Move move){
-		
-		return false;
+	public boolean checkMove(Move move, Player p){
+		//TODO
+		return isValidJump(move, p) || isValidWallPlace(move) || (isAdjacent(move, p) && isNotBlocked(move,p));
 	}
-	
-	
 	
 	/**
 	 * Check the validity of a given sequence of moves.
@@ -74,54 +63,82 @@ public class Validator {
 	 * // TODO@param moves a list of successive moves
 	 * @return validity of the list of moves
 	 */
-	public boolean check (String moves) {
-		assert moves != null;
-		boolean valid = true;
-		char c;
-		char lastc = ' ';
-		
-		Game temp = new Game();
-		
-/*
-		
-		for (int i = 0; i < moves.length() && valid == true; i++) {
-			c = moves.charAt (i);
-			if (c != ' ') {
-				if (Character.isLetter(c) && (c - 'a' < width)) {
-					if (lastc != ' ') {
-						valid = false;
-					}
-				} else if (Character.isDigit(c - 1) && c < height) {
-					if (!Character.isLetter(lastc)) {
-						valid = false;
-					} else {
-						if ((i < (moves.length() - 1)) && (moves.charAt(i+1) == 'h' || moves.charAt(i+1) == 'v')) {
-							if (i % 2 == 0) {
-							//	temp.placeWall(c,lastc - 'a', moves.charAt(i+1), temp.playerOne());
-							} else {
-							//	temp.placeWall(c,lastc - 'a', moves.charAt(i+1), temp.playerTwo());
-							}
-							i++;
-						} else {
-							if (i % 2 == 0) {
-							//	temp.move(c,(lastc - 'a'), temp.playerOne());
-							} else {
-							//	temp.move(c,(lastc - 'a'), temp.playerTwo());
-							}
-						}
-					//	valid = temp.valid();
-						
-					}
-				} else {
-					valid = false;
-				}
-			}
-			lastc = c;
-		}
-	
-		
-		return valid ;*/
+	public boolean checkList(LinkedList<Move> moves){
+		//TODO
 		return false;
 	}
+
+	
+
+	
+	/**
+	 * Checks if a wall placement is valid or not.
+	 * @param move A move (wall placement) to be checked for validity.
+	 * @return True if this wall placement is valid according to Game state, False if not.
+	 */
+	public boolean isValidWallPlace(Move move){
+		if(move.direction() != move.PAWN){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks if a pawn move is a valid jump move.
+	 * @param move A move to be checked for validity.
+	 * @return True if this move is a valid jump, False if not.
+	 */
+	public boolean isValidJump(Move move, Player p){
+		return false;
+	}
+	
+	
+	
+	/**
+	 * Checks if a Pawn move is adjacent to its previous position.
+	 * @param move A move to be checked for validity.
+	 * @return True if this move is adjacent to pawn's previous position, False if not.
+	 */
+	public boolean isAdjacent(Move move, Player p){
+		boolean isAdjLetter = Math.abs(move.coord().let() - p.pawn().let()) == 1;
+		boolean isSameLetter = move.coord().let() == p.pawn().let();
+		boolean isAdjNumber = Math.abs(move.coord().num() - p.pawn().num()) == 1;
+		boolean isSameNumber = move.coord().num() == p.pawn().num();
+		
+		return  (isAdjLetter && isSameNumber) || (isSameLetter && isAdjNumber) ;
+	}
+	
+	
+	/**
+	 * Checks whether a pawn can't make a move because there is a wall in between previous and wanted position.
+	 * It assumes the move is adjacent because it is used in combination ("&&") with isAdjacent anyway.
+	 * @param move the move to be made
+	 * @param p the player making the move
+	 * @return true if path is clear, false if there is a wall
+	 */
+	private boolean isNotBlocked(Move move, Player p) {
+		if(move.coord().let() - p.pawn().let() == 1 && game.isWallAt(move.coord().let(), move.coord().num(), game.VERTICAL)){
+			return false;
+		} else if (move.coord().let() - p.pawn().let() == -1 && game.isWallAt(p.pawn().let(), move.coord().num(), game.VERTICAL)) {
+			return false;
+		} else if (move.coord().num() - p.pawn().num() == 1 && game.isWallAt(move.coord().let(), move.coord().num(), game.HORIZONTAL)) {
+			return false;
+		} else if (move.coord().num() - p.pawn().num() == -1 && game.isWallAt(move.coord().let(), p.pawn().num(), game.VERTICAL)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	
+	
+	public boolean check(String string){
+		return false;
+	}
+	
+	
+
+
 
 }

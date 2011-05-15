@@ -3,6 +3,8 @@ package quoridor;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import util.Two;
+
 /**
  * Game factory is in charge of input, creating games, loading games. 
  * 
@@ -35,6 +37,9 @@ public class GameFactory {
 	final static int NEW_WITH_MOVES = 4;
 	final static int MOVE = 5;
 	
+	final static Player playerOne = new Human("Player 1");
+	final static Player playerTwo = new Human("Player 2");
+
 	
 	
 	/**
@@ -87,7 +92,7 @@ public class GameFactory {
 	 */
 	public static void newGame() {
 		System.out.println("Making a new game...");
-		Game game = new Game();
+		Game game = new Game(Two.two (playerOne, playerTwo));
 		game.play();
 	}
 	

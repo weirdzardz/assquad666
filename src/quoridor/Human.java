@@ -20,6 +20,11 @@ package quoridor;
 
 public class Human extends Player{
 
+	public Human(String string) {
+		// TODO Auto-generated constructor stub
+		this.name =string;
+	}
+
 	@Override
 	public String type() {
 		return "Human";

@@ -1,4 +1,4 @@
-package assquad666.quoridor;
+package quoridor;
 
 /**
  * Validator is in charge of deciding if a move or a serie of moves is valid according to the games' rules. 

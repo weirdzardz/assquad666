@@ -1,4 +1,4 @@
-package assquad666.quoridor;
+package quoridor;
 
 /**
  * AIPlayer extends Player and represents an AI Player, which will generate moves.

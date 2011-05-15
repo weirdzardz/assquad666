@@ -1,11 +1,12 @@
-package assquad666.quoridor.test;
+package quoridor.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import assquad666.quoridor.Validator;
+import quoridor.Validator;
+
 
 
 

@@ -1,4 +1,4 @@
-package assquad666.quoridor;
+package quoridor;
 
 /**
  * Move is in charge of storing moves informations(coordinates, if it's a wall, it's direction). 

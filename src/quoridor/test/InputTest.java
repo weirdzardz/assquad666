@@ -1,4 +1,4 @@
-package assquad666.quoridor.test;
+package quoridor.test;
 
 
 import org.junit.Before;

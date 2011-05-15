@@ -1,4 +1,4 @@
-package assquad666.quoridor;
+package quoridor;
 
 /**
  * Point is in charge of storing the coordinates of a square on the board. 

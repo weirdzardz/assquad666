@@ -1,4 +1,4 @@
-package assquad666.quoridor;
+package quoridor;
 
 /**
  * Human extends Player and represents a Human Player, which will be prompted for input to move.

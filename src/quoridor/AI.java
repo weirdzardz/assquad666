@@ -1,4 +1,4 @@
-package assquad666.quoridor;
+package quoridor;
 
 
 /**

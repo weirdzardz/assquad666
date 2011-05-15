@@ -1,4 +1,4 @@
-package assquad666.quoridor;
+package quoridor;
 
 /**
  * Player reprensents an abstract Player in the Game: it can be a human, or an AI.

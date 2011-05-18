@@ -1,5 +1,7 @@
 package quoridor;
 
+import java.util.LinkedList;
+
 /**
  * Player reprensents an abstract Player in the Game: it can be a human, or an AI.
  * 
@@ -24,7 +26,7 @@ public abstract class Player {
 
 	Point pawn;
 	String name;
-	
+	LinkedList<Point> positions = new LinkedList<Point>();
 	
 	/**
 	 * A Point representing the coordinates of the Pawn of a Player.
@@ -42,7 +44,9 @@ public abstract class Player {
 		return this.name;
 	}
 	
-	
+	public LinkedList<Point> positions(){
+		return this.positions;
+	}
 	/**
 	 * A String, the type of Player this is.
 	 * @return A String, the type of Player this is.

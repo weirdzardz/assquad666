@@ -1,7 +1,9 @@
 package quoridor;
 
 import java.util.LinkedList;
-import java.util.Scanner;
+
+
+import quoridor.Move.MoveType;
 
 /**
  * Command is in charge of parsing a String of input and storing it into itself. 
@@ -24,33 +26,20 @@ import java.util.Scanner;
  * @author Sacha BŽraud <sacha.beraud@gmail.com>
  *
  */
+
+
 public class Command {
-
-	//Different types of command
-	final int INVALID = 0;
-	final int NEW_GAME = 1;
-	final int LOAD_GAME = 2;
-	final int SAVE_GAME = 3;
-	final int NEW_WITH_MOVES = 4;
-	final int MOVE = 5;
-
 	
-	//Different moves informations
-	final int PAWN = 0;
-	final int HORIZONTAL = 1;
-	final int VERTICAL = 2;
-	
-	
-	int type;
-	String fileName;
-		
+	public enum CommandType {INVALID, NEW_GAME, LOAD_GAME, SAVE_GAME, NEW_WITH_MOVES, MOVE, UNDO, REDO, MOVES};	
+	CommandType type;
+	String fileName;		
 	LinkedList<Move> moves = new LinkedList<Move>();
 	
 	/**
 	 * The type of Command (new, load, save, new(with moves) or a move).
 	 * @return The type of Command (new, load, save, new(with moves) or a move). 
 	 */
-	public int type(){
+	public CommandType type(){
 		return type;
 	}
 	
@@ -86,71 +75,129 @@ public class Command {
 	 * @param input The String input into stdin that this class has to parse and store.
 	 */
 	public Command(String input){
-		char c;
-		char lastc = ' ';
-		char lastlastc = ' ';
-		int size = 9;
-		int startChar = 0;
-		int movCount = 0;
-		fileName = "";
+		String[] bits = input.split("\\s+");
 		
-		if ("\n".startsWith (input)) {
-			this.type = INVALID;
-			System.out.println("Error: Empty input.");
-			return;
-		} else if ("new".startsWith (input)){
-			this.type = NEW_GAME;
-			startChar = 4;
-	/*		if(input.charAt(startChar - 1) != ' ' && input.charAt(startChar - 1) != '\n'){
-				this.type = INVALID;
-				System.out.println("Error: A space is expected after \"new\".");
-				return;
-			}*/
-		} else if ("load".startsWith (input)){
-			this.type = LOAD_GAME;
-			startChar = 5;
-		} else if ("save".startsWith (input)){
-			this.type = SAVE_GAME;
-		} 
-		
-
-		
-		
-		c = input.charAt(0);
-
-		for(int i = startChar; i<input.length(); i++){
-			c = input.charAt(i);
-		//	System.out.println("les characters: "+lastlastc+" "+lastc+" "+c);
-			if(Character.isLetter(lastlastc) && ((lastlastc - 'a') < size) 
-					&& Character.isDigit(lastc) && (lastc - '0' <= size && lastc - '0' >0)){
-				if(c == 'h'){
-					this.moves.add(new Move(lastlastc - 'a', lastc - '0', HORIZONTAL));
-				} else if (c == 'v'){
-					this.moves.add(new Move(lastlastc - 'a', lastc - '0', VERTICAL));
-				} else if (c == ' '){
-					this.moves.add(new Move(lastlastc - 'a', lastc -'0', PAWN));
+		if(bits[0].equals("load")){			
+			if(bits.length == 2){
+				fileName = bits[1];
+				this.type = CommandType.LOAD_GAME;
+			} else {
+				System.out.println("You need to specify a file to load.");
+				this.type = CommandType.INVALID;
+			}			
+		} else if (bits[0].equals("new")){			
+			if (bits.length > 1){	
+				for(int j = 1; j<bits.length;j++){
+					Move temp = parseBit(bits[j]);
+					if(temp != null){
+						moves.add(temp);
+						this.type = CommandType.NEW_WITH_MOVES;
+					} else {
+						this.type = CommandType.INVALID;
+						return;
+					}
 				}
-				movCount++;
+			} else {
+				this.type = CommandType.NEW_GAME;
+			}			
+		} else if (bits[0].equals("save")){			
+			if(bits.length == 2){
+				fileName = bits[1];
+				this.type = CommandType.SAVE_GAME;
+			} else {
+				System.out.println("You need to specify a file name to save the game in.");
+				this.type = CommandType.INVALID;
+			}		
+		} else if (bits[0].equals("undo")){			
+				this.type = CommandType.UNDO;				
+		} else if (bits[0].equals("redo")){			
+				this.type = CommandType.REDO;
+		} else if(bits[0].equals("help")){
+				printHelp();
+		} else {
+			
+			if (bits.length > 1){	
+				for(int j = 0; j<bits.length;j++){
+					Move temp = parseBit(bits[j]);
+					if(temp != null){
+						moves.add(temp);
+						this.type = CommandType.MOVES;
+					} else {
+						this.type = CommandType.INVALID;
+						return;
+					}
+				}
+			} else {
+				Move temp = parseBit(bits[0]);
+				if(temp != null){
+					moves.add(temp);
+					this.type = CommandType.MOVE;
+				} else {
+					this.type = CommandType.INVALID;
+					return;
+				}
+			}
+		}	
+	}
+
+	private void printHelp() {
+		System.out.println("Quoridor Help");
+		System.out.println("Valid Commands:");
+		System.out.println("\"new\" creates a new game.");
+		System.out.println("\"new\" \"a list of moves\" creates a new game and initializes it to this list of moves.");
+		System.out.println("i.e. \"new e8 e2 e7 e3 e2h\"");
+		System.out.println("\"load\" \"xxx\" loads a game from a file. Replace \"xxx\" by the name of your file.");
+		System.out.println("\"save\" \"xxx\" save a game to a file. Replace \"xxx\" by the name of your file.");
+		System.out.println("You can use \"undo\" as many times as you want.");
+		System.out.println("Same thing for \"redo\".");
+
+	}
+
+	private Move parseBit(String bit) {
+		int size = 9;
+			
+		if(bit.length() == 2){
+			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
+				&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
+				return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.PAWN);
+			} else {
+				System.out.println(bit + " is not a valid move.");
+				return null;
+			}
+		} else if (bit.length() == 3){
+			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
+					&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
+				if(bit.charAt(2) == 'h'){
+					if(bit.charAt(0) == 'i'){
+						System.out.println(bit + " is not a valid move.");
+						return null;
+					} else {
+						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.HORIZONTAL);
+					}
+				} else if(bit.charAt(2) == 'v'){
+					if(bit.charAt(1) == '9'){
+						System.out.println(bit + " is not a valid move.");
+						return null;
+					} else {
+						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.VERTICAL);
+					}
+				} else {
+					System.out.println(bit + " is not a valid move.");
+					return null;
+				}
+			} else {
+				System.out.println(bit + " is not a valid move.");
+				return null;
 			}
 			
-			lastlastc = lastc;
-			lastc = c;
+			
+		} else {
+			System.out.println(bit + " is not a valid command.");
+			return null;
 		}
-		
-		//	System.out.println("les characters: "+lastlastc+" "+lastc+" "+c);
-
-		if(Character.isLetter(lastlastc) && ((lastlastc - 'a') < size) 
-				&& Character.isDigit(lastc) && (lastc - '0' <= size && lastc - '0' > 0)){
-			this.moves.add(new Move(lastlastc - 'a', lastc - '0', PAWN));
-			movCount++;
-		}
-		
-		if(movCount == 1){
-			this.type = MOVE;
-		} else if (movCount >1 ){
-			this.type = NEW_WITH_MOVES;
-		}
-		
-		
 	}
+	
+	
+	
+	
 }

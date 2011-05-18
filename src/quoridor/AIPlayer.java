@@ -20,6 +20,10 @@ package quoridor;
 
 public class AIPlayer extends Player{
 
+	public AIPlayer(String name){
+		this.name = name;
+	}
+	
 	@Override
 	public String type() {
 		return "AI";

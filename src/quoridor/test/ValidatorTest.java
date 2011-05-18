@@ -19,7 +19,7 @@ public class ValidatorTest {
 	@Before
     public void setUp () throws Exception
     {
-		 v = new Validator(null);
+		 v = new Validator();
     }
 	
 	//Pawn

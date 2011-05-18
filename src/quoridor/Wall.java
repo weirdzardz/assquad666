@@ -1,5 +1,7 @@
 package quoridor;
 
+import quoridor.Move.MoveType;
+
 /**
  * Wall represents a wall in the Game.
  * 
@@ -23,17 +25,17 @@ package quoridor;
 public class Wall {
 	
 	public Point pos;
-	public int dir;
+	public MoveType direction;
 	
 	
 	/**
 	 * Constructor. Creates a wall when called.
 	 * @param pos The position from which the wall will be drawn (top left corner of the square having this position on the board).
-	 * @param dir The direction of the wall (horizontal or vertical).
+	 * @param moveType The direction of the wall (horizontal or vertical).
 	 */
-	public Wall(Point pos, int dir){
+	public Wall(Point pos, MoveType moveType){
 		this.pos = pos;
-		this.dir = dir;
+		this.direction = moveType;
 	}
 	
 	
@@ -49,8 +51,8 @@ public class Wall {
 	 * The direction of the wall (horizontal or vertical).
 	 * @return The direction of the wall (horizontal or vertical).
 	 */
-	public int dir(){
-		return this.dir;
+	public MoveType dir(){
+		return this.direction;
 	}
 	
 }

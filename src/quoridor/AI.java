@@ -20,5 +20,17 @@ package quoridor;
  */
 
 public class AI {
-
+	
+	Game game;
+	
+	public AI(Game game){
+		this.game = game;
+	}
+	
+	public Move createMove(){
+		return null;
+	}
+	
+	
+	
 }

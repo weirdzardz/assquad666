@@ -41,7 +41,7 @@ public class Point {
 	 * The letter coordinate of this Point.
 	 * @return The letter coordinate of this Point.
 	 */
-	public int let(){
+	public int x(){
 		return this.x;
 	}
 	
@@ -49,7 +49,7 @@ public class Point {
 	 * The number coordinate of this Point.
 	 * @return The number coordinate of this Point.
 	 */
-	public int num(){
+	public int y(){
 		return this.y;
 	}
 	

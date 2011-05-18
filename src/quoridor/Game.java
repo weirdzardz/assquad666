@@ -1,7 +1,15 @@
 package quoridor;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
+
+import quoridor.Command.CommandType;
+import quoridor.Move.MoveType;
 
 import util.Two;
 
@@ -33,18 +41,6 @@ import util.Two;
 
 public class Game {
 	
-	//Different types of command
-	final int INVALID = 0;
-	final int NEW_GAME = 1;
-	final int LOAD_GAME = 2;
-	final int SAVE_GAME = 3;
-	final int NEW_WITH_MOVES = 4;
-	final int MOVE = 5;
-	
-	//Different moves informations
-	final int PAWN = 0;
-	final int HORIZONTAL = 1;
-	final int VERTICAL = 2;
 	
 	/**
 	 * Players playing the Game
@@ -53,9 +49,12 @@ public class Game {
 	public Player myTurn;
 	
 	int size = 9;
+	//boolean undoFlag;
+	
 	
 	LinkedList<Wall> walls = new LinkedList<Wall>();
 	LinkedList<Move> moves = new LinkedList<Move>();
+	LinkedList<Move> redoMoves = new LinkedList<Move>();
 	
 	
     public Two <Player> players ()
@@ -82,10 +81,20 @@ public class Game {
 	/**
 	 * Initializes the Game based on information from a load file or input on the command line.
 	 */
-	public void initGame() {
-		players._1.pawn = new Point('e' - 'a', 9);
-		players._2.pawn = new Point('e' - 'a', 1);
+	public void initGame(LinkedList<Move> moves) {
+		Point p1 = new Point('e' - 'a', 9);
+		Point p2 = new Point('e' - 'a', 1);
+		players._1.pawn = p1;
+		players._2.pawn = p2;
+		players._1.positions.add(p1);
+		players._2.positions.add(p2);
 		myTurn = players._1();
+		
+		if(moves != null){
+			for(Move move: moves){
+				move(move, myTurn);
+			}
+		}
 	}
 	
 	
@@ -97,9 +106,9 @@ public class Game {
 	 */
 	public Player pawnAt(int x, int y){
 		
-		if(players._1.pawn.let() == x && players._1.pawn.num() == y){
+		if(players._1.pawn.x() == x && players._1.pawn.y() == y){
 			return players._1();
-		} else if(players._2.pawn.let() == x && players._2.pawn.num() == y) {
+		} else if(players._2.pawn.x() == x && players._2.pawn.y() == y) {
 			return players._2();
 		} else {
 			return null;
@@ -114,16 +123,16 @@ public class Game {
 	 * @param dir the direction of the wall.
 	 * @return True if a wall is at coordinates x,y and with direction dir, false otherwise.
 	 */
-	public boolean isWallAt(int x, int y, int dir){
+	public boolean isWallAt(int x, int y, MoveType dir){
 		boolean returnValue = false;
 		
 		for(Wall myWall : walls){
 			
-			if(dir == HORIZONTAL){
-				if(myWall.dir() == dir && (myWall.pos().let() == x || myWall.pos().let() == x - 1) && myWall.pos().num() == y)
+			if(dir == MoveType.HORIZONTAL){
+				if(myWall.dir() == dir && (myWall.pos().x() == x || myWall.pos().x() == x - 1) && myWall.pos().y() == y)
 					returnValue = true;
-			} else if (dir == VERTICAL){
-				if(myWall.dir() == dir && myWall.pos().let() == x && (myWall.pos().num() == y || myWall.pos().num() == y - 1))
+			} else if (dir == MoveType.VERTICAL){
+				if(myWall.dir() == dir && myWall.pos().x() == x && (myWall.pos().y() == y || myWall.pos().y() == y - 1))
 					returnValue = true;
 			}
 			
@@ -132,16 +141,7 @@ public class Game {
 	}
 	
 	
-	/**
-	 * Soon to be erased, probably.
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public Player whosePawnAt(int x, int y){
-		
-		return null;
-	}
+
 	
 	
 	/**
@@ -158,14 +158,14 @@ public class Game {
 	 * @return True if a game is over (pos of player at the otherside of the board blah blah...), false if not.
 	 */
 	public boolean isOver(){	
-		return (players._1().pawn().num() == 1 || players._2().pawn().num() == 9);
+		return (players._1().pawn().y() == 1 || players._2().pawn().y() == 9);
 	}
 	
 	/**
 	 * @return The winner of the Game.
 	 */
 	public Player winner(){
-		if(players._1().pawn().num() == 1){
+		if(players._1().pawn().y() == 1){
 			return players._1();
 		} else {
 			return players._2();
@@ -176,7 +176,7 @@ public class Game {
 	 * @return The loser of the Game.
 	 */
 	public Player loser(){
-		if(players._1().pawn().num() == 1){
+		if(players._1().pawn().y() == 1){
 			return players._2();
 		} else {
 			return players._1();
@@ -189,13 +189,14 @@ public class Game {
 	 * @param p the player making the move.
 	 */
 	public void move(Move move, Player p) {
-		// TODO Auto-generated method stub
-		if(move.direction() == PAWN){
+		if(move.direction() == MoveType.PAWN){
 			placePawn(move, p);
+			p.positions.add(move.coord());
 		} else{
 			placeWall(move);
 		}
 		changeTurn();
+		moves.add(move);
 	}
 
 	/**
@@ -204,7 +205,7 @@ public class Game {
 	 * @param p The player making the move.
 	 */
 	public void placePawn(Move move, Player p){
-		p.pawn = new Point(move.coord().let(), move.coord().num());
+		p.pawn = new Point(move.coord().x(), move.coord().y());
 	}
 	
 	
@@ -216,16 +217,63 @@ public class Game {
 		walls.add(new Wall(move.coord(), move.direction()));
 	}
 	
-	/**
-	 * well its gonna call validator or something, soon to be done.
-	 * @param move The move with coordinates a player is making.
-	 * @return True if the move is valid, false if not.
-	 */
-	public boolean isValid (Move move){
+	
+	
+	public boolean undo(){
+		if(moves.size() > 0){
+			if(players.other(myTurn()).type().equals("AI")){
+				changeTurn();
+				if(moves.getLast().direction() == MoveType.PAWN){
+					myTurn().positions.removeLast();
+					myTurn().pawn = myTurn().positions.getLast();
+					redoMoves.add(moves.removeLast());
+				} else {
+					walls.removeLast();
+					redoMoves.add(moves.removeLast());
+				}
+				changeTurn();
+				if(moves.getLast().direction() == MoveType.PAWN){
+					myTurn().positions.removeLast();
+					myTurn().pawn = myTurn().positions.getLast();
+					redoMoves.add(moves.removeLast());
+				} else {
+					walls.removeLast();
+					redoMoves.add(moves.removeLast());
+				}
+			} else {
+				changeTurn();
+				if(moves.getLast().direction() == MoveType.PAWN){
+					myTurn().positions.removeLast();
+					myTurn().pawn = myTurn().positions.getLast();
+					redoMoves.add(moves.removeLast());
+				} else {
+					walls.removeLast();
+					redoMoves.add(moves.removeLast());
+				}
+			}
+			display();
+			System.out.println("Make a move "+ myTurn().name +": ");
+			return true;
+		} else {
+			System.out.println("You need to make a move before undoing it.");
+			return false;
+		}
 		
-		return false;
 	}
-
+	
+	public boolean redo(){
+		if(redoMoves.size() > 0){
+			move(redoMoves.removeLast(), myTurn());
+			display();
+			System.out.println("Make a move "+ myTurn().name +": ");
+			return true;
+		} else {
+			System.out.println("You need to undo a move before redoing it.");
+			return false;
+		}
+		
+	}
+	
 
 	/**
 	 * Plays the Game. With a !isOver() loop. keeps asking for prompts for now and displaying.
@@ -233,47 +281,28 @@ public class Game {
 	 */
 	public void play() {
 		
-		initGame();
 		display();
 		System.out.println("Make a move "+ myTurn().name +": ");
 		while(!isOver()){
-			
-			Command command = new Command(getInput());
-			
-			while(command.type() == INVALID) {
-				command = new Command(getInput());
+			Move move;
+			if(myTurn().type().equals("AI")){
+				AI ai = new AI(this);
+				move = ai.createMove();
+			} else {
+				move = getInput();
+				if(move == null)
+					return;
 			}
-			
-			if(command.type() == NEW_GAME){
-				GameFactory.newGame();
-				return;
-				
-			} else if(command.type() == LOAD_GAME){
-				GameFactory.loadGame(command.fileName());
-				return;
-				
-			} else if(command.type() == NEW_WITH_MOVES){
-				GameFactory.newGameWithMoves(command.moves());
-				return;
-				
-			} else if(command.type() == MOVE){
-				//if(isValid(command.move(),null))
-				Validator v = new Validator(this);
-				if(v.checkMove(command.move(), myTurn())){
-					move(command.move(), myTurn()); //null =>player who's turn it is
-					moves.add(command.move());
-				} else {
-					System.out.println("Invalid move noob, try again: ");
 
-				}
-				
-				
-			} else if(command.type() == SAVE_GAME){
-				save();
-				return; // a retirer
+			if(isValid(move, myTurn())){
+				move(move, myTurn());
+				redoMoves = new LinkedList<Move>();
+				display();
+				System.out.println("Make a move "+ myTurn().name +": ");
+			} else {
+				System.out.println("Invalid move noob, try again: ");
 			}
-			display();
-			System.out.println("Make a move "+ myTurn().name +": ");
+
 		}
 		
 		System.out.println("GG. Winner is " + winner().name + ".");
@@ -283,15 +312,30 @@ public class Game {
 	/**
 	 * Saves a Game. right now it just prints all the moves that have been done.
 	 */
-	public void save() {
+	public void save(String fileName) {
 		// TODO Auto-generated method stub
 		System.out.println("Saving a game...");
 		String line = "";
+		DataOutputStream dos;
+		
 		for(Move myMove: moves){
 			line +=  myMove.toString() + " ";
 		}
-		System.out.println(line); // to change to print to file and it's GG, I think
 
+		try {
+			File outFile = new File(fileName);
+			dos = new DataOutputStream(new FileOutputStream(outFile));
+			dos.writeBytes(line);
+			dos.close();
+		} catch (FileNotFoundException ex) {
+			System.out.println("Impossible to create file "+fileName);
+			return;
+		} catch (IOException ex) {
+			System.out.println("IO Exception");
+			return;
+		}
+
+		System.out.println(line+" has been saved in " + fileName); // to change to print to file and it's GG, I think
 	}
 
 
@@ -299,10 +343,65 @@ public class Game {
 	 * Used to get the users moves and commands.
 	 * @return String that the user input on the command line.
 	 */
-	public String getInput(){
+	public Move getInput(){
 		Scanner input = new Scanner (System.in);	
 		String line = input.nextLine ().toLowerCase ();
-		return line;
+		Command command = new Command(line);
+		
+		while(command.type() == CommandType.INVALID){
+			line = input.nextLine ().toLowerCase ();
+			command = new Command(line);
+		}
+		if(command.type() == CommandType.NEW_GAME){
+			if(YesNoPrompt(command.type())){
+				Two<Player> newPlayers = GameFactory.getPlayers();
+				GameFactory.newGame(newPlayers);
+			}
+			return null;
+			
+		} else if(command.type() == CommandType.LOAD_GAME){
+			if(YesNoPrompt(command.type())){
+				Two<Player> newPlayers = GameFactory.getPlayers();
+				GameFactory.loadGame(command.fileName(),newPlayers);
+			}
+			return null;
+			
+		} else if(command.type() == CommandType.NEW_WITH_MOVES){
+			if(YesNoPrompt(command.type())){
+				Two<Player> newPlayers = GameFactory.getPlayers();
+				GameFactory.newGameWithMoves(command.moves(), newPlayers);
+			}
+			return null;
+			
+		} else if(command.type() == CommandType.MOVE){
+			return command.move();
+		} else if(command.type() == CommandType.SAVE_GAME){
+			save(command.fileName());
+		} else if(command.type() == CommandType.UNDO){
+			undo();
+		} else if(command.type() == CommandType.REDO){
+			redo();
+		}
+		
+		
+		return getInput();
+	}
+	
+	public boolean YesNoPrompt(CommandType type){
+		Scanner input = new Scanner (System.in);	
+		
+		if(type == CommandType.NEW_GAME)
+			System.out.println("Are you sure you want to create a new game? All unsaved data will be lost.");
+		else if(type == CommandType.NEW_WITH_MOVES)
+			System.out.println("Are you sure you want to create a new game with move initialization? All unsaved data will be lost.");
+		else if(type == CommandType.LOAD_GAME)
+			System.out.println("Are you sure you want to load a game? All unsaved data will be lost.");
+		String line = input.nextLine ().toLowerCase ();
+		if(line.charAt(0) == 'y'){
+			return true;
+		}
+		
+		return false;
 	}
 	
 	
@@ -326,7 +425,7 @@ public class Game {
 			line = "";
 			
 			for(j=0;j<10;j++){
-				if( ((i == 0) || (i == 9) || (isWallAt(j-1,i+1,HORIZONTAL))) && j !=0  ) //TODO ADD the walls
+				if( ((i == 0) || (i == 9) || (isWallAt(j-1,i+1,MoveType.HORIZONTAL))) && j !=0  ) //TODO ADD the walls
 					
 					temp = "---"; 
 				else
@@ -348,7 +447,7 @@ public class Game {
 						temp = "   ";
 					
 					line +=temp;
-					if(isWallAt(k+1,i+1,VERTICAL) || k == 8) //check if vertical wall
+					if(isWallAt(k+1,i+1,MoveType.VERTICAL) || k == 8) //check if vertical wall
 						line += "|";
 					else
 						line += " ";
@@ -362,4 +461,121 @@ public class Game {
 			System.out.println(myString);
 		}	
 	}
+	
+	
+	
+	/**
+	 * Check the validity of a move for a particular game state.
+	 * @param move the move to be checked for validity
+	 * @return validity of this move.
+	 */
+	public boolean isValid (Move move, Player p){
+		
+		return isValidJump(move, p) || isValidWallPlace(move) || (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p));
+	}
+
+	
+	/**
+	 * Checks if a wall placement is valid or not.
+	 * @param move A move (wall placement) to be checked for validity.
+	 * @return True if this wall placement is valid according to Game state, False if not.
+	 */
+	public boolean isValidWallPlace(Move move){
+		if(move.direction() != MoveType.PAWN
+				&& !isCrossing(new Wall(move.coord(), move.direction()))
+				&& isValidPath(new Wall(move.coord(), move.direction()))){ //TODO not i column horizontals/ 9 row verticals
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks if a pawn move is a valid jump move.
+	 * @param move A move to be checked for validity.
+	 * @return True if this move is a valid jump, False if not.
+	 */
+	public boolean isValidJump(Move move, Player p){
+		Move temp = new Move(players().other(p).pawn().x(), players().other(p).pawn().y(), MoveType.PAWN);
+		return isAdjacent(temp, p) && isAdjacent(move, players.other(p)) && isNotBlocked(move, players.other(p));
+	}
+	
+	
+	
+	/**
+	 * Checks if a Pawn move is adjacent to its previous position.
+	 * @param move A move to be checked for validity.
+	 * @return True if this move is adjacent to pawn's previous position, False if not.
+	 */
+	public boolean isAdjacent(Move move, Player p){
+		boolean isAdjLetter = Math.abs(move.coord().x() - p.pawn().x()) == 1;
+		boolean isSameLetter = move.coord().x() == p.pawn().x();
+		boolean isAdjNumber = Math.abs(move.coord().y() - p.pawn().y()) == 1;
+		boolean isSameNumber = move.coord().y() == p.pawn().y();
+		
+		return  (isAdjLetter && isSameNumber) || (isSameLetter && isAdjNumber) ;
+	}
+	
+	
+	/**
+	 * Checks whether a pawn can't make a move because there is a wall in between previous and wanted position.
+	 * It assumes the move is adjacent because it is used in combination ("&&") with isAdjacent anyway.
+	 * @param move the move to be made
+	 * @param p the player making the move
+	 * @return true if path is clear, false if there is a wall
+	 */
+	public boolean isNotBlocked(Move move, Player p) {
+		if(move.coord().x() - p.pawn().x() == 1 && isWallAt(move.coord().x(), move.coord().y(), MoveType.VERTICAL)){
+			return false;
+		} else if (move.coord().x() - p.pawn().x() == -1 && isWallAt(p.pawn().x(), move.coord().y(), MoveType.VERTICAL)) {
+			return false;
+		} else if (move.coord().y() - p.pawn().y() == 1 && isWallAt(move.coord().x(), move.coord().y(), MoveType.HORIZONTAL)) {
+			return false;
+		} else if (move.coord().y() - p.pawn().y() == -1 && isWallAt(move.coord().x(), p.pawn().y(), MoveType.VERTICAL)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public boolean isCrossing(Wall w){
+
+		if(w.dir() == MoveType.VERTICAL){
+			if( (isWallAt(w.pos().x()-1, w.pos().y()+1,MoveType.HORIZONTAL)
+					&& isWallAt(w.pos().x(), w.pos().y()+1,MoveType.HORIZONTAL))
+					|| (isWallAt(w.pos().x(), w.pos().y(),MoveType.VERTICAL)
+						|| 	isWallAt(w.pos().x(), w.pos().y()+1,MoveType.VERTICAL))){
+						return true;
+					} else {
+						return false;
+					}
+		} else {
+			if( (isWallAt(w.pos().x()+1, w.pos().y()-1,MoveType.VERTICAL)
+					&& isWallAt(w.pos().x()+1, w.pos().y(),MoveType.VERTICAL))
+					|| (isWallAt(w.pos().x(), w.pos().y(),MoveType.HORIZONTAL)
+							|| isWallAt(w.pos().x()+1, w.pos().y(),MoveType.HORIZONTAL))){
+						return true;
+					} else {
+						return false;
+					}
+		} 
+	}
+	
+	public boolean samePlace(Move m, Player p){
+		
+		if(m.coord().equals(p.pawn()))
+			return true;
+		else
+			return false;
+				
+	}
+	
+	
+	public boolean isValidPath(Wall w){
+		
+		return true;
+	}
+	
+	
+	
 }

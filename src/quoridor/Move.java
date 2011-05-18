@@ -22,13 +22,11 @@ package quoridor;
 
 public class Move {
 
+	public enum MoveType {PAWN, HORIZONTAL, VERTICAL};
 	
-	//Different moves informations
-	final int PAWN = 0;
-	final int HORIZONTAL = 1;
-	final int VERTICAL = 2;
 	
-	int direction;
+
+	MoveType direction;
 	Point coord;	
 	
 	/** 
@@ -37,7 +35,7 @@ public class Move {
 	 * @param y the number coordinate.
 	 * @param dir the direction of the wall, or 0 for pawn movement.
 	 */
-	public Move(int x, int y, int dir){
+	public Move(int x, int y, MoveType dir){
 		this.coord = new Point(x,y);
 		this.direction = dir;
 	}
@@ -47,7 +45,7 @@ public class Move {
 	 * The direction of the wall, or 0 for pawn movement.
 	 * @return The direction of the wall, or no direction (0) for pawn movemement.
 	 */
-	public int direction(){
+	public MoveType direction(){
 		return direction;
 	}
 	
@@ -63,12 +61,12 @@ public class Move {
 	public String toString() {
 		String line = "";
 		char c = 'a';
-		c += this.coord.let();
+		c += this.coord.x();
 		line += c;
-		line += this.coord.num();
-		if (direction == HORIZONTAL)
+		line += this.coord.y();
+		if (direction == MoveType.HORIZONTAL)
 			line += "h";
-		else if (direction == VERTICAL)
+		else if (direction == MoveType.VERTICAL)
 			line += "v";
 		return line;
 	}

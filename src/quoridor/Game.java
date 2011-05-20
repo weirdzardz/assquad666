@@ -194,6 +194,7 @@ public class Game {
 			p.positions.add(move.coord());
 		} else{
 			placeWall(move);
+			p.deductWall();
 		}
 		changeTurn();
 		moves.add(move);
@@ -471,7 +472,7 @@ public class Game {
 	 */
 	public boolean isValid (Move move, Player p){
 		
-		return isValidJump(move, p) || isValidWallPlace(move) || (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p));
+		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p));
 	}
 
 	
@@ -480,8 +481,8 @@ public class Game {
 	 * @param move A move (wall placement) to be checked for validity.
 	 * @return True if this wall placement is valid according to Game state, False if not.
 	 */
-	public boolean isValidWallPlace(Move move){
-		if(move.direction() != MoveType.PAWN
+	public boolean isValidWallPlace(Move move, Player p){
+		if(p.wallsLeft() >= 0 && move.direction() != MoveType.PAWN
 				&& !isCrossing(new Wall(move.coord(), move.direction()))
 				&& isValidPath(new Wall(move.coord(), move.direction()))){ //TODO not i column horizontals/ 9 row verticals
 			return true;

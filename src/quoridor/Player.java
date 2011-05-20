@@ -26,6 +26,7 @@ public abstract class Player {
 
 	Point pawn;
 	String name;
+	int wall = 5;
 	LinkedList<Point> positions = new LinkedList<Point>();
 	
 	/**
@@ -52,5 +53,13 @@ public abstract class Player {
 	 * @return A String, the type of Player this is.
 	 */
 	public abstract String type();
+	
+	public int wallsLeft() {
+		return wall;
+	}
+	
+	public void deductWall() {
+		wall--;
+	}
 	
 }

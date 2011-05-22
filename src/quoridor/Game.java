@@ -194,6 +194,7 @@ public class Game {
 			p.positions.add(move.coord());
 		} else{
 			placeWall(move);
+			p.deductWall();
 		}
 		changeTurn();
 		moves.add(move);
@@ -471,7 +472,7 @@ public class Game {
 	 */
 	public boolean isValid (Move move, Player p){
 		
-		return isValidJump(move, p) || isValidWallPlace(move) || (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p));
+		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move, p) && !samePlace(move, p) && isClear(move, p));
 	}
 
 	
@@ -480,8 +481,8 @@ public class Game {
 	 * @param move A move (wall placement) to be checked for validity.
 	 * @return True if this wall placement is valid according to Game state, False if not.
 	 */
-	public boolean isValidWallPlace(Move move){
-		if(move.direction() != MoveType.PAWN
+	public boolean isValidWallPlace(Move move, Player p){
+		if(p.wallsLeft() >= 0 && move.direction() != MoveType.PAWN
 				&& !isCrossing(new Wall(move.coord(), move.direction()))
 				&& isValidPath(new Wall(move.coord(), move.direction()))){ //TODO not i column horizontals/ 9 row verticals
 			return true;
@@ -531,7 +532,7 @@ public class Game {
 			return false;
 		} else if (move.coord().y() - p.pawn().y() == 1 && isWallAt(move.coord().x(), move.coord().y(), MoveType.HORIZONTAL)) {
 			return false;
-		} else if (move.coord().y() - p.pawn().y() == -1 && isWallAt(move.coord().x(), p.pawn().y(), MoveType.VERTICAL)) {
+		} else if (move.coord().y() - p.pawn().y() == -1 && isWallAt(move.coord().x(), p.pawn().y(), MoveType.HORIZONTAL)) {
 			return false;
 		} else {
 			return true;
@@ -559,6 +560,19 @@ public class Game {
 						return false;
 					}
 		} 
+	}
+	
+	/**
+	 * Checks if other players are already in that position
+	 * @return true if position isn't taken. False if it is.
+	 */
+	public boolean isClear(Move move, Player p) {
+		if (move.coord().x() == players.other(p).pawn().x() 
+				&& move.coord().y() == players.other(p).pawn().y()) {
+				return false;
+		}
+		
+		return true;
 	}
 	
 	public boolean samePlace(Move m, Player p){

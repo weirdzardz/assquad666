@@ -46,16 +46,35 @@ public class AI {
 		
 		move = randomMove(possibleMoves);
 		//move = closestTargetMove(possibleMoves);
+<<<<<<< HEAD
 //		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
 //		System.out.println("type:n " + move.direction());
+=======
+<<<<<<< HEAD
+//		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
+//		System.out.println("type:n " + move.direction());
+=======
+		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
+		System.out.println("type:n " + move.direction());
+>>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 
 		return move;
 	}
 	
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 	/**
 	 * Finds all the possible moves for the player
 	 * @return list of possible moves
 	 */
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 	private ArrayList<Move> findPossibleMoves() {
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		ArrayList<Move> checkList = new ArrayList<Move>();
@@ -85,17 +104,30 @@ public class AI {
 			}
 		}
 		
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 //		for (int i = 0; i < checkList.size(); i++) {
 //			System.out.print("(" + checkList.get(i).coord().x() + ", " + checkList.get(i).coord().y() + ") ");
 //		}
 //		System.out.println();
 		
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 		for (int i = 0; i < checkList.size(); i++) {
 			if (isInBoard(checkList.get(i)) && game.isValid(checkList.get(i), game.myTurn())) {
 				possibleMoves.add(checkList.get(i));
 			}
 		}		
 		
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 //		for (int i = 0; i < possibleMoves.size(); i++) {
 //			System.out.print("(" +possibleMoves.get(i).coord().x() + ", " + possibleMoves.get(i).coord().y() + ") ");
 //		}
@@ -120,6 +152,18 @@ public class AI {
 //			System.out.print("(" +possibleMoves.get(i).coord().x() + ", " + possibleMoves.get(i).coord().y() + ") ");
 //		}
 //		System.out.println();
+<<<<<<< HEAD
+=======
+=======
+		return possibleMoves;
+	}
+
+	private Move randomMove(ArrayList<Move> possibleMoves) {
+		Random randomGenerator = new Random();
+		Move move = possibleMoves.get(randomGenerator.nextInt(possibleMoves.size()));
+		
+>>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 		return move;
 	}
 	
@@ -142,15 +186,32 @@ public class AI {
 //		
 //	}
 	
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 	/**
 	 * Checks if the move is inside the board
 	 * @return true if it is inside, otherwise false
 	 */
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 	private boolean isInBoard(Move move) {
 		int x = move.coord().x();
 		int y = move.coord().y();
 		
+<<<<<<< HEAD
 		if (x >= 0 && x < 9 && y > 0 && y <= 9) {
+=======
+<<<<<<< HEAD
+		if (x >= 0 && x < 9 && y > 0 && y <= 9) {
+=======
+		if (x > 0 && x <= 9 && y > 0 && y <= 9) {
+>>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
+>>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
 			return true;
 		}
 		

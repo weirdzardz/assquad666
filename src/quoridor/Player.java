@@ -26,19 +26,7 @@ public abstract class Player {
 
 	Point pawn;
 	String name;
-<<<<<<< HEAD
 	int wall = 10;
-=======
-<<<<<<< HEAD
-	int wall = 10;
-=======
-<<<<<<< HEAD
-	int wall = 10;
-=======
-	int wall = 5;
->>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
->>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
->>>>>>> 466d01885739bfcfbf3674ddf9fa70ed11746740
 	LinkedList<Point> positions = new LinkedList<Point>();
 	
 	/**

@@ -472,19 +472,7 @@ public class Game {
 	 */
 	public boolean isValid (Move move, Player p){
 		
-<<<<<<< HEAD
 		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move, p) && !samePlace(move, p) && isClear(move, p));
-=======
-<<<<<<< HEAD
-		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move, p) && !samePlace(move, p) && isClear(move, p));
-=======
-<<<<<<< HEAD
-		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move, p) && !samePlace(move, p)); //&& isClear(move, p));
-=======
-		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p));
->>>>>>> e40b95ce8ce496d58017adc35618be7aaccc0ee2
->>>>>>> b5baad8d03609dabe6d0ae6be2495cd908f2e2bb
->>>>>>> 466d01885739bfcfbf3674ddf9fa70ed11746740
 	}
 
 	

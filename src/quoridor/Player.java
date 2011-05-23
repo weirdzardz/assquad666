@@ -25,8 +25,9 @@ import java.util.LinkedList;
 public abstract class Player {
 
 	Point pawn;
+	int goal;
 	String name;
-	int wall = 10;
+	int wall = 5;
 	LinkedList<Point> positions = new LinkedList<Point>();
 	
 	/**
@@ -61,5 +62,18 @@ public abstract class Player {
 	public void deductWall() {
 		wall--;
 	}
+	
+	/**
+	 * An integer, the straight line distance from the goal zone
+	 * @return An integer, the straight line distance from the goal zone
+	 */
+	public int goalDistance() {
+		return Math.abs(goal - pawn.y());
+	}
+	
+	public int goal() {
+		return goal;
+	}
+	
 	
 }

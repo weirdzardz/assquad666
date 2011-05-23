@@ -67,18 +67,18 @@ public class GameFactory {
 		String line = input.nextLine ().toLowerCase ();
 		Command command = new Command(line);
 		
-		while(command.type() == CommandType.INVALID 
-				|| command.type() == CommandType.MOVE 
-				|| command.type() == CommandType.SAVE_GAME
-				|| command.type() == CommandType.UNDO
-				|| command.type() == CommandType.REDO) {
-			if (command.type() == CommandType.MOVE){
+		while(command.type().equals(CommandType.INVALID) 
+				|| command.type().equals(CommandType.MOVE) 
+				|| command.type().equals(CommandType.SAVE_GAME)
+				|| command.type().equals(CommandType.UNDO)
+				|| command.type().equals(CommandType.REDO)) {
+			if (command.type().equals(CommandType.MOVE)){
 				System.out.println("You need to make a new game before making a move, try again:");
-			} else if(command.type() == CommandType.SAVE_GAME){
+			} else if(command.type().equals(CommandType.SAVE_GAME)){
 				System.out.println("You need to make a new game before saving, try again:");
-			} else if(command.type() == CommandType.UNDO){
+			} else if(command.type().equals(CommandType.UNDO)){
 				System.out.println("You need to make a new game before using undo, try again:");
-			} else if(command.type() == CommandType.REDO){
+			} else if(command.type().equals(CommandType.REDO)){
 				System.out.println("You need to make a new game before using redo, try again:");
 			} else{
 				System.out.println("Input a command:");
@@ -90,13 +90,13 @@ public class GameFactory {
 		while(players == null)
 			players = getPlayers();
 		
-		if(command.type() == CommandType.NEW_GAME){
+		if(command.type().equals(CommandType.NEW_GAME)){
 			newGame(players);
 			
-		} else if(command.type() == CommandType.LOAD_GAME){
+		} else if(command.type().equals(CommandType.LOAD_GAME)){
 			loadGame(command.fileName(), players);
 			
-		} else if(command.type() == CommandType.NEW_WITH_MOVES){
+		} else if(command.type().equals(CommandType.NEW_WITH_MOVES)){
 			newGameWithMoves(command.moves(), players);	
 		} 
 		
@@ -155,7 +155,7 @@ public class GameFactory {
 			return;
 		}
 		Command c = new Command(line);
-		if(c.type() == CommandType.MOVES || c.type() == CommandType.MOVE){
+		if(c.type().equals(CommandType.MOVES) || c.type().equals(CommandType.MOVE)){
 			Validator v = new Validator();
 			if(v.check(c.moves())){
 				Game game = new Game(players);

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import quoridor.Command;
 import quoridor.Validator;
 
 
@@ -13,7 +14,9 @@ import quoridor.Validator;
 
 public class ValidatorTest {
 
-	Validator v;
+	Validator v;  //validator takes a list of moves, and is called from gamefactory, the tests should call newgame.command("new <insert moves>")
+				  //then v.check(newgame.moves())
+	Command newgame;
 
 	
 	@Before

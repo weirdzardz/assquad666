@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import quoridor.Command.CommandType;
@@ -88,6 +90,8 @@ public class Game {
 		players._2.pawn = p2;
 		players._1.positions.add(p1);
 		players._2.positions.add(p2);
+		players._1.goal = 1;
+		players._2.goal = 9;
 		myTurn = players._1();
 		
 		if(moves != null){
@@ -128,11 +132,11 @@ public class Game {
 		
 		for(Wall myWall : walls){
 			
-			if(dir == MoveType.HORIZONTAL){
-				if(myWall.dir() == dir && (myWall.pos().x() == x || myWall.pos().x() == x - 1) && myWall.pos().y() == y)
+			if(dir.equals(MoveType.HORIZONTAL)){
+				if(dir.equals(myWall.dir()) && (myWall.pos().x() == x || myWall.pos().x() == x - 1) && myWall.pos().y() == y)
 					returnValue = true;
-			} else if (dir == MoveType.VERTICAL){
-				if(myWall.dir() == dir && myWall.pos().x() == x && (myWall.pos().y() == y || myWall.pos().y() == y - 1))
+			} else if (dir.equals(MoveType.VERTICAL)){
+				if(dir.equals(myWall.dir()) && myWall.pos().x() == x && (myWall.pos().y() == y || myWall.pos().y() == y - 1))
 					returnValue = true;
 			}
 			
@@ -155,10 +159,10 @@ public class Game {
 	
 	/**
 	 * Checks if a game is over, soon to be done.
-	 * @return True if a game is over (pos of player at the otherside of the board blah blah...), false if not.
+	 * @return True if a game is over, (if a player is in their goal space), false if not.
 	 */
 	public boolean isOver(){	
-		return (players._1().pawn().y() == 1 || players._2().pawn().y() == 9);
+		return (players._1().goalDistance() == 0 || players._2().goalDistance() == 0);
 	}
 	
 	/**
@@ -189,7 +193,7 @@ public class Game {
 	 * @param p the player making the move.
 	 */
 	public void move(Move move, Player p) {
-		if(move.direction() == MoveType.PAWN){
+		if(move.direction().equals(MoveType.PAWN)){
 			placePawn(move, p);
 			p.positions.add(move.coord());
 		} else{
@@ -224,7 +228,7 @@ public class Game {
 		if(moves.size() > 0){
 			if(players.other(myTurn()).type().equals("AI")){
 				changeTurn();
-				if(moves.getLast().direction() == MoveType.PAWN){
+				if(moves.getLast().direction().equals(MoveType.PAWN)){
 					myTurn().positions.removeLast();
 					myTurn().pawn = myTurn().positions.getLast();
 					redoMoves.add(moves.removeLast());
@@ -233,7 +237,7 @@ public class Game {
 					redoMoves.add(moves.removeLast());
 				}
 				changeTurn();
-				if(moves.getLast().direction() == MoveType.PAWN){
+				if(moves.getLast().direction().equals(MoveType.PAWN)){
 					myTurn().positions.removeLast();
 					myTurn().pawn = myTurn().positions.getLast();
 					redoMoves.add(moves.removeLast());
@@ -243,7 +247,7 @@ public class Game {
 				}
 			} else {
 				changeTurn();
-				if(moves.getLast().direction() == MoveType.PAWN){
+				if(moves.getLast().direction().equals(MoveType.PAWN)){
 					myTurn().positions.removeLast();
 					myTurn().pawn = myTurn().positions.getLast();
 					redoMoves.add(moves.removeLast());
@@ -349,38 +353,38 @@ public class Game {
 		String line = input.nextLine ().toLowerCase ();
 		Command command = new Command(line);
 		
-		while(command.type() == CommandType.INVALID){
+		while(command.type().equals(CommandType.INVALID)){
 			line = input.nextLine ().toLowerCase ();
 			command = new Command(line);
 		}
-		if(command.type() == CommandType.NEW_GAME){
+		if(command.type().equals(CommandType.NEW_GAME)){
 			if(YesNoPrompt(command.type())){
 				Two<Player> newPlayers = GameFactory.getPlayers();
 				GameFactory.newGame(newPlayers);
 			}
 			return null;
 			
-		} else if(command.type() == CommandType.LOAD_GAME){
+		} else if(command.type().equals(CommandType.LOAD_GAME)){
 			if(YesNoPrompt(command.type())){
 				Two<Player> newPlayers = GameFactory.getPlayers();
 				GameFactory.loadGame(command.fileName(),newPlayers);
 			}
 			return null;
 			
-		} else if(command.type() == CommandType.NEW_WITH_MOVES){
+		} else if(command.type().equals(CommandType.NEW_WITH_MOVES)){
 			if(YesNoPrompt(command.type())){
 				Two<Player> newPlayers = GameFactory.getPlayers();
 				GameFactory.newGameWithMoves(command.moves(), newPlayers);
 			}
 			return null;
 			
-		} else if(command.type() == CommandType.MOVE){
+		} else if(command.type().equals(CommandType.MOVE)){
 			return command.move();
-		} else if(command.type() == CommandType.SAVE_GAME){
+		} else if(command.type().equals(CommandType.SAVE_GAME)){
 			save(command.fileName());
-		} else if(command.type() == CommandType.UNDO){
+		} else if(command.type().equals(CommandType.UNDO)){
 			undo();
-		} else if(command.type() == CommandType.REDO){
+		} else if(command.type().equals(CommandType.REDO)){
 			redo();
 		}
 		
@@ -391,11 +395,11 @@ public class Game {
 	public boolean YesNoPrompt(CommandType type){
 		Scanner input = new Scanner (System.in);	
 		
-		if(type == CommandType.NEW_GAME)
+		if(type.equals(CommandType.NEW_GAME))
 			System.out.println("Are you sure you want to create a new game? All unsaved data will be lost.");
-		else if(type == CommandType.NEW_WITH_MOVES)
+		else if(type.equals(CommandType.NEW_WITH_MOVES))
 			System.out.println("Are you sure you want to create a new game with move initialization? All unsaved data will be lost.");
-		else if(type == CommandType.LOAD_GAME)
+		else if(type.equals(CommandType.LOAD_GAME))
 			System.out.println("Are you sure you want to load a game? All unsaved data will be lost.");
 		String line = input.nextLine ().toLowerCase ();
 		if(line.charAt(0) == 'y'){
@@ -472,7 +476,7 @@ public class Game {
 	 */
 	public boolean isValid (Move move, Player p){
 		
-		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move, p) && !samePlace(move, p) && isClear(move, p));
+		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p));
 	}
 
 	
@@ -482,13 +486,13 @@ public class Game {
 	 * @return True if this wall placement is valid according to Game state, False if not.
 	 */
 	public boolean isValidWallPlace(Move move, Player p){
-		if(p.wallsLeft() >= 0 && move.direction() != MoveType.PAWN
-				&& !isCrossing(new Wall(move.coord(), move.direction()))
-				&& isValidPath(new Wall(move.coord(), move.direction()))){ //TODO not i column horizontals/ 9 row verticals
-			return true;
-		} else {
-			return false;
+		if(p.wallsLeft() >= 0 && !move.direction().equals(MoveType.PAWN)
+				&& !isCrossing(new Wall(move.coord(), move.direction()))){ //TODO not i column horizontals/ 9 row verticals
+			if (isValidPath(new Wall(move.coord(), move.direction()))) {
+				return true;
+			}
 		}
+		return false;
 	}
 	
 	/**
@@ -532,7 +536,7 @@ public class Game {
 			return false;
 		} else if (move.coord().y() - p.pawn().y() == 1 && isWallAt(move.coord().x(), move.coord().y(), MoveType.HORIZONTAL)) {
 			return false;
-		} else if (move.coord().y() - p.pawn().y() == -1 && isWallAt(move.coord().x(), p.pawn().y(), MoveType.HORIZONTAL)) {
+		} else if (move.coord().y() - p.pawn().y() == -1 && isWallAt(move.coord().x(), p.pawn().y(), MoveType.VERTICAL)) {
 			return false;
 		} else {
 			return true;
@@ -541,7 +545,7 @@ public class Game {
 	
 	public boolean isCrossing(Wall w){
 
-		if(w.dir() == MoveType.VERTICAL){
+		if(w.dir().equals(MoveType.VERTICAL)){
 			if( (isWallAt(w.pos().x()-1, w.pos().y()+1,MoveType.HORIZONTAL)
 					&& isWallAt(w.pos().x(), w.pos().y()+1,MoveType.HORIZONTAL))
 					|| (isWallAt(w.pos().x(), w.pos().y(),MoveType.VERTICAL)
@@ -550,7 +554,7 @@ public class Game {
 					} else {
 						return false;
 					}
-		} else {
+		} else if (w.dir().equals(MoveType.HORIZONTAL)){
 			if( (isWallAt(w.pos().x()+1, w.pos().y()-1,MoveType.VERTICAL)
 					&& isWallAt(w.pos().x()+1, w.pos().y(),MoveType.VERTICAL))
 					|| (isWallAt(w.pos().x(), w.pos().y(),MoveType.HORIZONTAL)
@@ -559,20 +563,8 @@ public class Game {
 					} else {
 						return false;
 					}
-		} 
-	}
-	
-	/**
-	 * Checks if other players are already in that position
-	 * @return true if position isn't taken. False if it is.
-	 */
-	public boolean isClear(Move move, Player p) {
-		if (move.coord().x() == players.other(p).pawn().x() 
-				&& move.coord().y() == players.other(p).pawn().y()) {
-				return false;
 		}
-		
-		return true;
+		return false;
 	}
 	
 	public boolean samePlace(Move m, Player p){
@@ -586,10 +578,78 @@ public class Game {
 	
 	
 	public boolean isValidPath(Wall w){
-		
-		return true;
+		boolean valid;
+		walls.add(w);
+		if ((shortestPath(players._1) != null) && (shortestPath(players._2) != null))
+			valid = true;
+		else
+			valid = false;
+		walls.remove(w);
+		return valid;
 	}
 	
-	
+	public LinkedList <Move> shortestPath (Player player) {
+		Comparator <WeightedMove> comparator = new WeightedMoveComparator();
+		PriorityQueue <WeightedMove> open = new PriorityQueue <WeightedMove> (1024, comparator);
+		LinkedList <WeightedMove> closed = new LinkedList <WeightedMove> ();
+		WeightedMove current = null;
+		WeightedMove next = null;
+		Player tempPlayer = new Human("");//TODO add a constructor for player, or change isnotblocked to take two points or something
+		tempPlayer.goal = player.goal;
+		Point tempPawn;
+		int gcost = 0;
+		
+		WeightedMove initial = new WeightedMove(player.pawn().x(), player.pawn().y(), MoveType.PAWN, gcost, player, null);
+		open.add(initial);
+		while(open.peek() != null) {
+			current = open.poll();
+			if (current.weight() == Integer.MAX_VALUE) {	//TODO avoid early exit with peek and check of weight
+				return null;
+			}
+			gcost = current.gcost() + 1;
+			tempPawn = new Point(current.coord().x(), current.coord().y());
+			tempPlayer.pawn = tempPawn;
+			if (tempPlayer.goalDistance() != 0) {
+				next = new WeightedMove(current.coord().x() + 1, current.coord().y(), MoveType.PAWN, gcost, player, current);
+				if (!isNotBlocked(next, tempPlayer) || next.coord().x() >= 9) {
+					next = new WeightedMove(current.coord().x() + 1, current.coord().y(), MoveType.PAWN, Integer.MAX_VALUE, player, current);
+				}
+				if (!(open.contains(next) || closed.contains(next)))
+					open.offer(next);
+				
+				next = new WeightedMove(current.coord().x(), current.coord().y() + 1, MoveType.PAWN, gcost, player, current);
+				if (!isNotBlocked(next, tempPlayer) || next.coord().y() > 9) {
+					next = new WeightedMove(current.coord().x(), current.coord().y() + 1, MoveType.PAWN, Integer.MAX_VALUE, player, current);
+				}
+				if (!(open.contains(next) || closed.contains(next)))
+					open.offer(next);
+				
+				next = new WeightedMove(current.coord().x() - 1, current.coord().y(), MoveType.PAWN, gcost, player, current);
+				if (!isNotBlocked(next, tempPlayer) || next.coord().x() <= 1) {
+					next = new WeightedMove(current.coord().x() - 1, current.coord().y(), MoveType.PAWN, Integer.MAX_VALUE, player, current);
+				}
+				if (!(open.contains(next) || closed.contains(next)))
+					open.offer(next);
+				
+				next = new WeightedMove(current.coord().x(), current.coord().y() - 1, MoveType.PAWN, gcost, player, current);
+				if (!isNotBlocked(next, tempPlayer) || next.coord().y() < 1) {
+					next = new WeightedMove(current.coord().x(), current.coord().y() - 1, MoveType.PAWN, Integer.MAX_VALUE, player, current);
+				}
+				if (!(open.contains(next) || closed.contains(next)))
+					open.offer(next);
+			} else {
+				open = new PriorityQueue <WeightedMove> (1, comparator);
+			}
+			closed.add(current);
+		}
+		LinkedList <Move> result = new LinkedList <Move> ();
+		result.add(current);
+		while (current.parent() != null) {
+			current = current.parent();
+			result.addFirst(current);
+		}
+		return result;
+		
+	}
 	
 }

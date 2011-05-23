@@ -41,24 +41,18 @@ public class AI {
 
 		Move move = null;
 	    
-		possibleMoves = generatePossibleMoves();
+		possibleMoves = findPossibleMoves();
 		
 		
 		move = randomMove(possibleMoves);
-		//move = minimaxDecision();
-		
 		//move = closestTargetMove(possibleMoves);
-//		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
-//		System.out.println("type:n " + move.direction());
+		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
+		System.out.println("type:n " + move.direction());
 
 		return move;
 	}
 	
-	/**
-	 * Finds all the possible moves for the player
-	 * @return list of possible moves
-	 */
-	private ArrayList<Move> generatePossibleMoves() {
+	private ArrayList<Move> findPossibleMoves() {
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		ArrayList<Move> checkList = new ArrayList<Move>();
 		Point current = game.myTurn.pawn();
@@ -87,41 +81,19 @@ public class AI {
 			}
 		}
 		
-//		for (int i = 0; i < checkList.size(); i++) {
-//			System.out.print("(" + checkList.get(i).coord().x() + ", " + checkList.get(i).coord().y() + ") ");
-//		}
-//		System.out.println();
-		
 		for (int i = 0; i < checkList.size(); i++) {
 			if (isInBoard(checkList.get(i)) && game.isValid(checkList.get(i), game.myTurn())) {
 				possibleMoves.add(checkList.get(i));
 			}
 		}		
 		
-//		for (int i = 0; i < possibleMoves.size(); i++) {
-//			System.out.print("(" +possibleMoves.get(i).coord().x() + ", " + possibleMoves.get(i).coord().y() + ") ");
-//		}
-//		System.out.println();
-		
 		return possibleMoves;
 	}
 
-	/**
-	 * Selects a random move out of a list of possible moves 
-	 * @param possibleMoves list of possible moves
-	 * @return the selected move
-	 */
 	private Move randomMove(ArrayList<Move> possibleMoves) {
 		Random randomGenerator = new Random();
-		//System.out.println(possibleMoves.size());
-		int ran = randomGenerator.nextInt(possibleMoves.size());
-		Move move = possibleMoves.get(ran);
+		Move move = possibleMoves.get(randomGenerator.nextInt(possibleMoves.size()));
 		
-//		System.out.println("ran = " + ran);
-//		for (int i = 0; i < possibleMoves.size(); i++) {
-//			System.out.print("(" +possibleMoves.get(i).coord().x() + ", " + possibleMoves.get(i).coord().y() + ") ");
-//		}
-//		System.out.println();
 		return move;
 	}
 	
@@ -144,35 +116,11 @@ public class AI {
 //		
 //	}
 	
-	private Move minimaxDecision() {
-		ArrayList<Move> possibleMoves = generatePossibleMoves();
-		int highestValueIndex = 0;
-		int highestValue = 0;
-		Move move = null;
-		
-		for (int i = 0; i < possibleMoves.size(); i++) {
-			if (minimaxValue() > highestValue) {
-				i = highestValueIndex;
-				highestValue = minimaxValue();
-			}
-		}
-		
-		return move;
-	}
-	private int minimaxValue() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/**
-	 * Checks if the move is inside the board
-	 * @return true if it is inside, otherwise false
-	 */
 	private boolean isInBoard(Move move) {
 		int x = move.coord().x();
 		int y = move.coord().y();
 		
-		if (x >= 0 && x < 9 && y > 0 && y <= 9) {
+		if (x > 0 && x <= 9 && y > 0 && y <= 9) {
 			return true;
 		}
 		

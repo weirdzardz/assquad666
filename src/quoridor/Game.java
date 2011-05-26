@@ -268,10 +268,19 @@ public class Game {
 	
 	public boolean redo(){
 		if(redoMoves.size() > 0){
-			move(redoMoves.removeLast(), myTurn());
-			display();
-			System.out.println("Make a move "+ myTurn().name +": ");
-			return true;
+			if(players.other(myTurn()).type().equals("AI")){
+				move(redoMoves.removeLast(), myTurn());
+				move(redoMoves.removeLast(), myTurn());
+				display();
+				System.out.println("Make a move "+ myTurn().name +": ");
+				return true;
+				
+			}else {
+				move(redoMoves.removeLast(), myTurn());
+				display();
+				System.out.println("Make a move "+ myTurn().name +": ");
+				return true;
+			}
 		} else {
 			System.out.println("You need to undo a move before redoing it.");
 			return false;
@@ -318,7 +327,6 @@ public class Game {
 	 * Saves a Game. right now it just prints all the moves that have been done.
 	 */
 	public void save(String fileName) {
-		// TODO Auto-generated method stub
 		System.out.println("Saving a game...");
 		String line = "";
 		DataOutputStream dos;
@@ -430,7 +438,7 @@ public class Game {
 			line = "";
 			
 			for(j=0;j<10;j++){
-				if( ((i == 0) || (i == 9) || (isWallAt(j-1,i+1,MoveType.HORIZONTAL))) && j !=0  ) //TODO ADD the walls
+				if( ((i == 0) || (i == 9) || (isWallAt(j-1,i+1,MoveType.HORIZONTAL))) && j !=0  ) 
 					
 					temp = "---"; 
 				else
@@ -489,7 +497,7 @@ public class Game {
 	 */
 	public boolean isValidWallPlace(Move move, Player p){
 		if(p.wallsLeft() >= 0 && !move.direction().equals(MoveType.PAWN)
-				&& !isCrossing(new Wall(move.coord(), move.direction()))){ //TODO not i column horizontals/ 9 row verticals
+				&& !isCrossing(new Wall(move.coord(), move.direction()))){
 			if (isValidPath(new Wall(move.coord(), move.direction()))) {
 				return true;
 			}

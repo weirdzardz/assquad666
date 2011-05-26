@@ -90,8 +90,8 @@ public class Game {
 		players._2.pawn = p2;
 		players._1.positions.add(p1);
 		players._2.positions.add(p2);
-		players._1.goal = 1;
-		players._2.goal = 9;
+		players._1.setGoal(1);
+		players._2.setGoal(9);
 		myTurn = players._1();
 		
 		if(moves != null){

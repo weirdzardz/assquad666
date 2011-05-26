@@ -476,7 +476,9 @@ public class Game {
 	 */
 	public boolean isValid (Move move, Player p){
 		
-		return isValidJump(move, p) || isValidWallPlace(move, p) || (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p));
+		return (isValidJump(move, p) && isInBoard(move))
+				|| (isValidWallPlace(move, p) && isInBoard(move))
+				|| (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p) && isInBoard(move));
 	}
 
 	
@@ -536,12 +538,35 @@ public class Game {
 			return false;
 		} else if (move.coord().y() - p.pawn().y() == 1 && isWallAt(move.coord().x(), move.coord().y(), MoveType.HORIZONTAL)) {
 			return false;
-		} else if (move.coord().y() - p.pawn().y() == -1 && isWallAt(move.coord().x(), p.pawn().y(), MoveType.VERTICAL)) {
+		} else if (move.coord().y() - p.pawn().y() == -1 && isWallAt(move.coord().x(), p.pawn().y(), MoveType.HORIZONTAL)) {
 			return false;
 		} else {
 			return true;
 		}
 	}
+	
+	public boolean isInBoard(Move m) {
+		if(m.direction() == MoveType.HORIZONTAL){
+			if(m.coord().x() >= 0 && m.coord().x() <=7 && m.coord().y() > 1 && m.coord().y() <= 9)
+				return true;
+			else
+				return false;
+			
+		} else if (m.direction() == MoveType.VERTICAL){
+			if(m.coord().x() > 0 && m.coord().x() <=8 && m.coord().y() >= 1 && m.coord().y() <= 8)
+				return true;
+			else
+				return false;
+			
+		} else {
+			if(m.coord().x() >= 0 && m.coord().x() <= 8 && m.coord().y() >= 1 && m.coord().y() <= 9)
+				return true;
+			else
+				return false;	
+		}
+	}
+	
+	
 	
 	public boolean isCrossing(Wall w){
 

@@ -154,33 +154,22 @@ public class Command {
 	}
 
 	private Move parseBit(String bit) {
-		int size = 9;
 			
 		if(bit.length() == 2){
-			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
-				&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
+			if(Character.isLetter(bit.charAt(0)) 
+				&& Character.isDigit(bit.charAt(1))){
 				return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.PAWN);
 			} else {
 				System.out.println(bit + " is not a valid move.");
 				return null;
 			}
 		} else if (bit.length() == 3){
-			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
-					&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
+			if(Character.isLetter(bit.charAt(0)) 
+					&& Character.isDigit(bit.charAt(1))){
 				if(bit.charAt(2) == 'h'){
-					if(bit.charAt(0) == 'i'){
-						System.out.println(bit + " is not a valid move.");
-						return null;
-					} else {
 						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.HORIZONTAL);
-					}
 				} else if(bit.charAt(2) == 'v'){
-					if(bit.charAt(1) == '9'){
-						System.out.println(bit + " is not a valid move.");
-						return null;
-					} else {
 						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.VERTICAL);
-					}
 				} else {
 					System.out.println(bit + " is not a valid move.");
 					return null;
@@ -201,3 +190,58 @@ public class Command {
 	
 	
 }
+
+
+
+
+
+/* backup
+ * 
+ * 
+ * if(bit.length() == 2){
+			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
+				&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
+				return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.PAWN);
+			} else {
+				System.out.println(bit + " is not a valid move.");
+				return null;
+			}
+		} else if (bit.length() == 3){
+			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
+					&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
+				if(bit.charAt(2) == 'h'){
+					if(bit.charAt(0) == 'i' || bit.charAt(1) == '1'){
+						System.out.println(bit + " is not a valid move.");
+						return null;
+					} else {
+						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.HORIZONTAL);
+					}
+				} else if(bit.charAt(2) == 'v'){
+					if(bit.charAt(1) == '9' || bit.charAt(0) == 'a'){
+						System.out.println(bit + " is not a valid move.");
+						return null;
+					} else {
+						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.VERTICAL);
+					}
+				} else {
+					System.out.println(bit + " is not a valid move.");
+					return null;
+				}
+			} else {
+				System.out.println(bit + " is not a valid move.");
+				return null;
+			}
+			
+			
+		} else {
+			System.out.println(bit + " is not a valid command.");
+			return null;
+		}
+	}
+ * 
+ * 
+ * 
+ * 
+ */
+ 
+

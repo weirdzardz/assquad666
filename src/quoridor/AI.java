@@ -37,17 +37,11 @@ public class AI {
 	}
 	
 	public Move createMove(){
-		ArrayList<Move> possibleMoves = new ArrayList<Move>();
+		Move move = randomMove();
 
-		Move move = null;
-	    
-		possibleMoves = findPossibleMoves();
-		
-		
-		move = randomMove(possibleMoves);
-		//move = closestTargetMove(possibleMoves);
-		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
-		System.out.println("type:n " + move.direction());
+		//move = naiveMove();
+//		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
+//		System.out.println("type: " + move.direction());
 
 		return move;
 	}
@@ -82,7 +76,7 @@ public class AI {
 		}
 		
 		for (int i = 0; i < checkList.size(); i++) {
-			if (isInBoard(checkList.get(i)) && game.isValid(checkList.get(i), game.myTurn())) {
+			if (game.isValid(checkList.get(i), game.myTurn())) {
 				possibleMoves.add(checkList.get(i));
 			}
 		}		
@@ -90,41 +84,62 @@ public class AI {
 		return possibleMoves;
 	}
 
-	private Move randomMove(ArrayList<Move> possibleMoves) {
+	private Move randomMove() {
+		ArrayList<Move> possibleMoves = findPossibleMoves();
 		Random randomGenerator = new Random();
 		Move move = possibleMoves.get(randomGenerator.nextInt(possibleMoves.size()));
 		
 		return move;
 	}
 	
-
-//	private Move closestTargetMove(ArrayList<Move> moves) {
-//		Move closest = moves.get(0);
-//		int lowestDis = 99;
-//		int newLow;
-//		
-//		for (int i = 0; i < moves.size(); i++) {
-//			newLow = (int) Math.sqrt(Math.pow(moves.get(i).coord().x() - 4, 2) + Math.pow(moves.get(i).coord().y() - 9, 2));
-//			
-//			if (newLow < lowestDis) {
-//				lowestDis = newLow;
-//				closest = moves.get(i);
+//	private Move naiveMove() {
+//		ArrayList<Move> possibleMoves = findPossibleMoves();
+//		int highestValue = game.shortestPath(game.myTurn).size();
+//		Player player = game.myTurn();
+//		int index = 0;
+//
+//		//placing walls
+//		for (int i = 0; i < possibleMoves.size(); i++) {
+//			int value = 0;
+//			if (possibleMoves.get(i).direction() == MoveType.HORIZONTAL 
+//					|| possibleMoves.get(i).direction() == MoveType.VERTICAL) {
+//				//add wall to game
+//
+//
+//				//Game tempGame = game;
+//				
+//				System.out.println(game.myTurn);
+//				if (!game.myTurn().equals(player)) {
+//					game.changeTurn();
+//				}
+//				
+//				System.out.println(game.myTurn);
+//				//tempGame.move(possibleMoves.get(i), tempGame.myTurn);
+//				game.move(possibleMoves.get(i), game.myTurn);
+//				System.out.println(possibleMoves.get(i).direction());
+//				System.out.println(game.myTurn().wallsLeft());
+//				//tempGame.display();
+//				
+//				//System.out.println(tempGame.myTurn);
+//
+//				//find shortest path
+//				value = game.shortestPath(game.players.other(game.myTurn)).size() 
+//						- game.shortestPath(game.myTurn).size();
+//				if (value > highestValue) {
+//					highestValue = value;
+//					index = i;
+//					//System.out.println("move: (" + possibleMoves.get(index).coord().x() + ", " + possibleMoves.get(index).coord.y() + ")");
+//
+//				}
+//				
+//				game.undo();
+//				System.out.println(game.myTurn().wallsLeft());
+//
 //			}
 //		}
 //		
-//		return closest;
-//		
-//	}
-	
-	private boolean isInBoard(Move move) {
-		int x = move.coord().x();
-		int y = move.coord().y();
-		
-		if (x > 0 && x <= 9 && y > 0 && y <= 9) {
-			return true;
-		}
-		
-		return false;
-	}
+//		System.out.println(highestValue);
+//		return possibleMoves.get(index);
+//	}	
 	
 }

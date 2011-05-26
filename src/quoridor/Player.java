@@ -71,6 +71,10 @@ public abstract class Player {
 		return Math.abs(goal - pawn.y());
 	}
 	
+	public void setGoal(int goal) {
+		this.goal = goal;
+	}
+	
 	public int goal() {
 		return goal;
 	}

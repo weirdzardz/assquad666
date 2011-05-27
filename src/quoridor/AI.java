@@ -40,7 +40,7 @@ public class AI {
 	public Move createMove(){
 		//Move move = randomMove();
 
-		Move move = naiveMove();
+		Move move = randomMove();
 //		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
 //		System.out.println("type: " + move.direction());
 		//move = new Move(3, 1, MoveType.VERTICAL);

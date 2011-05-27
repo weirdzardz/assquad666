@@ -27,7 +27,7 @@ public abstract class Player {
 	Point pawn;
 	int goal;
 	String name;
-	int wall = 5;
+	int wall = 10;
 	LinkedList<Point> positions = new LinkedList<Point>();
 	
 	/**
@@ -69,6 +69,10 @@ public abstract class Player {
 	 */
 	public int goalDistance() {
 		return Math.abs(goal - pawn.y());
+	}
+	
+	public void setGoal(int goal) {
+		this.goal = goal;
 	}
 	
 	public int goal() {

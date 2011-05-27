@@ -38,21 +38,21 @@ public class AI {
 	}
 	
 	public Move createMove(){
-		Move move = randomMove();
+		//Move move = randomMove();
 
-		//Move move = naiveMove();
+		Move move = naiveMove();
 //		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
 //		System.out.println("type: " + move.direction());
-		move = new Move(3, 1, MoveType.VERTICAL);
+		//move = new Move(3, 1, MoveType.VERTICAL);
 		
-		System.out.println("Placing d1v valid = " + game.isValid(move, game.myTurn));
+		//System.out.println("Placing d1v valid = " + game.isValid(move, game.myTurn));
 		
-		System.out.print("Walls = ");
-		for (int i = 0; i < game.walls.size(); i++) {
-			System.out.print("(" + game.walls.get(i).pos.x + ", " + game.walls.get(i).pos.y + ") ");
-		}
+		//System.out.print("Walls = ");
+		//for (int i = 0; i < game.walls.size(); i++) {
+		//	System.out.print("(" + game.walls.get(i).pos.x + ", " + game.walls.get(i).pos.y + ") ");
+		//}
 		
-		System.out.println();
+		//System.out.println();
 	
 		return move;
 	}

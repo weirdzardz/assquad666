@@ -484,11 +484,24 @@ public class Game {
 	 */
 	public boolean isValid (Move move, Player p){
 		
-		return (isValidJump(move, p))
-				|| (isValidWallPlace(move, p))
-				|| (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p) && !samePlace(move,players().other(p))) && isInBoard(move);
+		return (isValidJump(move, p)
+				|| isValidWallPlace(move, p)
+				|| isValidMove(move, p))
+				&& isInBoard(move);
 	}
 
+	
+	public boolean isValidMove(Move m, Player p){
+		if((isAdjacent(m, p) 
+				&& isNotBlocked(m,p) 
+				&& !samePlace(m, p) 
+				&& !samePlace(m,players().other(p))
+				&& m.direction().equals(MoveType.PAWN))){
+					return true;
+				}
+		return false;
+	}
+	
 	
 	/**
 	 * Checks if a wall placement is valid or not.
@@ -496,7 +509,7 @@ public class Game {
 	 * @return True if this wall placement is valid according to Game state, False if not.
 	 */
 	public boolean isValidWallPlace(Move move, Player p){
-		if(p.wallsLeft() >= 0 && !move.direction().equals(MoveType.PAWN)
+		if(p.wallsLeft() > 0 && !move.direction().equals(MoveType.PAWN)
 				&& !isCrossing(new Wall(move.coord(), move.direction()))){
 			if (isValidPath(new Wall(move.coord(), move.direction()))) {
 				return true;
@@ -511,8 +524,16 @@ public class Game {
 	 * @return True if this move is a valid jump, False if not.
 	 */
 	public boolean isValidJump(Move move, Player p){
-		Move temp = new Move(players().other(p).pawn().x(), players().other(p).pawn().y(), MoveType.PAWN);
-		return isAdjacent(temp, p) && isAdjacent(move, players.other(p)) && isNotBlocked(move, players.other(p));
+		if(move.direction().equals(MoveType.PAWN)){
+			Move temp = new Move(players().other(p).pawn().x(), players().other(p).pawn().y(), MoveType.PAWN);
+			if(Math.abs(p.pawn().x() - players().other(p).pawn().x()) == 1){
+				
+			}
+			
+			return isAdjacent(temp, p) && isAdjacent(move, players.other(p)) && isNotBlocked(move, players.other(p));
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -674,7 +695,7 @@ public class Game {
 				open = new PriorityQueue <WeightedMove> (1, comparator);
 			}
 			closed.add(current);
-			System.out.println("current x: " +current.coord().x() + " y: " +current.coord().y());
+			//System.out.println("current x: " +current.coord().x() + " y: " +current.coord().y());
 		}
 		LinkedList <Move> result = new LinkedList <Move> ();
 		result.add(current);

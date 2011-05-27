@@ -634,10 +634,10 @@ public class Game {
 	public boolean isValidPath(Wall w){
 		boolean valid;
 		walls.add(w);
-		if ((shortestPath(players._1) != null) && (shortestPath(players._2) != null))
+		//if ((shortestPath(players._1) != null) && (shortestPath(players._2) != null))
 			valid = true;
-		else
-			valid = false;
+		//else
+		//	valid = false;
 		walls.remove(w);
 		return valid;
 	}

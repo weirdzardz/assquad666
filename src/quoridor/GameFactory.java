@@ -87,7 +87,7 @@ public class GameFactory {
 			command = new Command(line);
 		}
 		
-		while(players == null)
+		//while(players == null)
 			players = getPlayers();
 		
 		if(command.type().equals(CommandType.NEW_GAME)){
@@ -111,6 +111,10 @@ public class GameFactory {
 		
 		System.out.println("How many AI players in this game? Enter 0, 1, or 2.");
 		String line = input.nextLine ().toLowerCase ();
+		if(line.isEmpty())
+			return getPlayers();
+		
+		
 		if(line.charAt(0) == '0'){
 			System.out.println("Enter your name, player one:");
 			line = input.nextLine ().toLowerCase ();
@@ -128,7 +132,7 @@ public class GameFactory {
 			playerTwo = new AIPlayer("Computer 2");
 		} else {
 			System.out.println(line+" is not a valid number of AI players.");
-			return null;
+			return getPlayers();
 		}
 		return Two.two(playerOne, playerTwo);
 	}

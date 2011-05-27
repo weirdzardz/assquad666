@@ -484,9 +484,9 @@ public class Game {
 	 */
 	public boolean isValid (Move move, Player p){
 		
-		return (isValidJump(move, p) && isInBoard(move))
-				|| (isValidWallPlace(move, p) && isInBoard(move))
-				|| (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p) && isInBoard(move));
+		return (isValidJump(move, p))
+				|| (isValidWallPlace(move, p))
+				|| (isAdjacent(move, p) && isNotBlocked(move,p) && !samePlace(move, p) && !samePlace(move,players().other(p))) && isInBoard(move);
 	}
 
 	
@@ -674,6 +674,7 @@ public class Game {
 				open = new PriorityQueue <WeightedMove> (1, comparator);
 			}
 			closed.add(current);
+			System.out.println("current x: " +current.coord().x() + " y: " +current.coord().y());
 		}
 		LinkedList <Move> result = new LinkedList <Move> ();
 		result.add(current);

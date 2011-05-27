@@ -652,7 +652,7 @@ public class Game {
 		tempPlayer.goal = player.goal;
 		Point tempPawn;
 		int gcost = 0;
-		
+		//test
 		WeightedMove initial = new WeightedMove(player.pawn().x(), player.pawn().y(), MoveType.PAWN, gcost, player, null);
 		open.add(initial);
 		while(open.peek() != null) {

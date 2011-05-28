@@ -30,4 +30,10 @@ public class Human extends Player{
 		return "Human";
 	}
 
+	@Override
+	public String level() {
+		// TODO Auto-generated method stub
+		return "noLevel";
+	}
+
 }

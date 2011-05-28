@@ -28,6 +28,7 @@ public abstract class Player {
 	int goal;
 	String name;
 	int wall = 10;
+	String level;
 	LinkedList<Point> positions = new LinkedList<Point>();
 	
 	/**
@@ -78,6 +79,8 @@ public abstract class Player {
 	public int goal() {
 		return goal;
 	}
+
+	public abstract String level();
 	
 	
 }

@@ -312,7 +312,10 @@ public class Game {
 				move(move, myTurn());
 				redoMoves = new LinkedList<Move>();
 				display();
-				System.out.println("Make a move "+ myTurn().name +": ");
+				if(myTurn().type().equals("Human"))
+					System.out.println("Make a move "+ myTurn().name +": ");
+				else
+					System.out.println(myTurn().name + "("+myTurn().level()+")" + " is making a move...");
 			} else {
 				System.out.println("Invalid move noob, try again: ");
 			}
@@ -468,7 +471,17 @@ public class Game {
 				strings.add(line);
 			}
 		}
+		if(players._1().type() == "Human")
+			line = players._1().name() + "(X) has "+players._1().wallsLeft()+" walls left to use.";
+		else
+			line = players._1().name() + "("+players._1().level()+")"+"(O) has "+players._1().wallsLeft()+" walls left to use.";
+		strings.add(line);
 		
+		if(players._2().type() == "Human")
+			line = players._2().name() + "(O) has "+players._2().wallsLeft()+" walls left to use.";
+		else
+			line = players._2().name() + "("+players._2().level()+")"+"(O) has "+players._2().wallsLeft()+" walls left to use.";
+		strings.add(line);
 		//Actually prints everything
 		for(String myString : strings) {
 			System.out.println(myString);
@@ -491,6 +504,12 @@ public class Game {
 	}
 
 	
+	/**
+	 * Checks whether a pawn placement is correct.
+	 * @param m the move to be made by the pawn
+	 * @param p the player making the move
+	 * @return the validity of a pawn placement
+	 */
 	public boolean isValidMove(Move m, Player p){
 		if((isAdjacent(m, p) 
 				&& isNotBlocked(m,p) 
@@ -512,6 +531,7 @@ public class Game {
 		if(p.wallsLeft() > 0 && !move.direction().equals(MoveType.PAWN)
 				&& !isCrossing(new Wall(move.coord(), move.direction()))){
 			if (isValidPath(new Wall(move.coord(), move.direction()))) {
+				//System.out.println("ValidPath");
 				return true;
 			}
 		}
@@ -526,12 +546,77 @@ public class Game {
 	public boolean isValidJump(Move move, Player p){
 		if(move.direction().equals(MoveType.PAWN)){
 			Move temp = new Move(players().other(p).pawn().x(), players().other(p).pawn().y(), MoveType.PAWN);
-			if(Math.abs(p.pawn().x() - players().other(p).pawn().x()) == 1){
-				
+			if(oppositeBlocked(move,p)){
+				return isAdjacent(temp, p) && isAdjacent(move, players.other(p)) && isNotBlocked(move, players.other(p));
+			} else {
+				if(opposite(move,p)){
+					return true;
+				} else {
+					return false;
+				}
 			}
-			
-			return isAdjacent(temp, p) && isAdjacent(move, players.other(p)) && isNotBlocked(move, players.other(p));
 		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * checks if a pawn move is on the opposite side of the player's opponent 
+	 * @param m the move to be made by a player
+	 * @param p the player making the move
+	 * @return true or false
+	 */
+	public boolean opposite(Move m, Player p){
+		Player other = players.other(p);
+		if(p.pawn().x() == other.pawn().x() 
+				&& p.pawn().y() == other.pawn().y() + 1 
+				&& m.coord().x() == p.pawn().x() 
+				&& m.coord().y() == other.pawn().y() -1)
+			return true;
+		else if(p.pawn().x() == other.pawn().x() 
+				&& p.pawn().y() == other.pawn().y() - 1 
+				&& m.coord().x() == p.pawn().x() 
+				&& m.coord().y() == other.pawn().y() + 1)
+			return true;
+		else if(p.pawn().x() == other.pawn().x() +1 
+				&& p.pawn().y() == other.pawn().y() 
+				&& m.coord().y() == p.pawn().y() 
+				&& m.coord().x() == other.pawn().x() -1)
+			return true;
+		else if(p.pawn().x() == other.pawn().x() - 1
+				&& p.pawn().y() == other.pawn().y() 
+				&& m.coord().y() == p.pawn().y() 
+				&& m.coord().x() == other.pawn().x() +1)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * checks if there is a wall on the opposite side of a player's opponent
+	 * @param m the move to be made by a player
+	 * @param p the player making the move
+	 * @return true or false
+	 */
+	public boolean oppositeBlocked(Move m, Player p){
+		Player other = players.other(p);
+		if( p.pawn().x() == other.pawn().x() 
+				&& p.pawn().y() == other.pawn().y() - 1 
+				&& !isNotBlocked(new Move(other.pawn().x(), other.pawn().y()+1,MoveType.PAWN),other))
+			return true;
+		else if ( p.pawn().x() == other.pawn().x() 
+				&& p.pawn().y() == other.pawn().y() +1 
+				&& !isNotBlocked(new Move(other.pawn().x(), other.pawn().y()-1,MoveType.PAWN),other))
+			return true;
+		else if ( p.pawn().x() == other.pawn().x() - 1
+				&& p.pawn().y() == other.pawn().y() 
+				&& !isNotBlocked(new Move(other.pawn().x() + 1, other.pawn().y(),MoveType.PAWN),other))
+			return true;
+		else if ( p.pawn().x() == other.pawn().x() + 1
+				&& p.pawn().y() == other.pawn().y() 
+				&& !isNotBlocked(new Move(other.pawn().x() - 1, other.pawn().y(),MoveType.PAWN),other))
+			return true;
+		else {
 			return false;
 		}
 	}
@@ -574,6 +659,11 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Checks whether a move is outside the board.
+	 * @param m the move to be made
+	 * @return true if it is in the board, false if not
+	 */
 	public boolean isInBoard(Move m) {
 		if(m.direction() == MoveType.HORIZONTAL){
 			if(m.coord().x() >= 0 && m.coord().x() <=7 && m.coord().y() > 1 && m.coord().y() <= 9)
@@ -597,6 +687,11 @@ public class Game {
 	
 	
 	
+	/**
+	 * Checks whether a wall is going to be on top of another when placed.
+	 * @param w the wall to be placed
+	 * @return true if a wall is crossing or on top of another, false if not
+	 */
 	public boolean isCrossing(Wall w){
 
 		if(w.dir().equals(MoveType.VERTICAL)){
@@ -621,6 +716,12 @@ public class Game {
 		return false;
 	}
 	
+	/**
+	 * Checks whether a move is actually on the same spot as the player itself.
+	 * @param m the move to be made
+	 * @param p the player making the move
+	 * @return true if they are on the same spot, false if not
+	 */
 	public boolean samePlace(Move m, Player p){
 		
 		if(m.coord().equals(p.pawn()))
@@ -631,17 +732,29 @@ public class Game {
 	}
 	
 	
+	/**
+	 * Makes sure the placement of a wall does not prevent a player from reaching its goal (anti-stuck). 
+	 * @param w the wall to be checked for placement validity
+	 * @return true if there is a path, false if not
+	 */
 	public boolean isValidPath(Wall w){
 		boolean valid;
 		walls.add(w);
-		//if ((shortestPath(players._1) != null) && (shortestPath(players._2) != null))
+		if ((shortestPath(players._1) != null) && (shortestPath(players._2) != null)){
 			valid = true;
-		//else
-		//	valid = false;
+		} else {
+			System.out.println("not valid path dude");
+			valid = false;
+		}
 		walls.remove(w);
 		return valid;
 	}
 	
+	/**
+	 * Computes the shortest path for a player to reach the goal as a list of moves.
+	 * @param player for which shortest path to win is computed
+	 * @return shortest list of moves to win
+	 */
 	public LinkedList <Move> shortestPath (Player player) {
 		Comparator <WeightedMove> comparator = new WeightedMoveComparator();
 		PriorityQueue <WeightedMove> open = new PriorityQueue <WeightedMove> (1024, comparator);

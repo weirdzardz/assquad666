@@ -127,15 +127,37 @@ public class GameFactory {
 			line = input.nextLine ().toLowerCase ();
 			playerOne = new Human(line);
 			playerTwo = new AIPlayer("Computer");
+			playerTwo.level = getAILevel(2);		
 		} else if (line.charAt(0) == '2'){
 			playerOne = new AIPlayer("Computer 1");
+			playerOne.level = getAILevel(1);
 			playerTwo = new AIPlayer("Computer 2");
+			playerTwo.level = getAILevel(2);
 		} else {
 			System.out.println(line+" is not a valid number of AI players.");
 			return getPlayers();
 		}
 		return Two.two(playerOne, playerTwo);
 	}
+	
+	
+	public static String getAILevel(int player){
+		Scanner input = new Scanner (System.in);
+		String line;
+		System.out.println("What level is the AI "+player+" (random, naive or pro):");
+		line = input.nextLine ().toLowerCase ();
+		if(line.startsWith("random")){
+			return "random";
+		} else if(line.startsWith("naive")){
+			return "naive";
+		} else if(line.startsWith("pro")){
+			return "pro";
+		} else {
+			System.out.println("Sorry, this is not a correct answer.");
+			return getAILevel(player);
+		}
+	}
+	
 	
 	
 	/**

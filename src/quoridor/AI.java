@@ -65,12 +65,13 @@ public class AI {
 
 		int highestValue = -999;
 		int index = 0;
-
+		Random random = new Random();
 		//Find best move		
-		System.out.println("My path = " + game.shortestPath(game.myTurn()));
-		System.out.println("Their path = " + game.shortestPath(game.players.other(game.myTurn())));
-
-		if (myValue >= playerShortestPath - 1 && game.myTurn().wallsLeft() != 0) {
+//		System.out.println("My path = " + game.shortestPath(game.myTurn()));
+//		System.out.println("Their path = " + game.shortestPath(game.players.other(game.myTurn())));
+		
+		if (myValue >= playerShortestPath - 1 && game.myTurn().wallsLeft() != 0 
+				&& game.moves.size() > random.nextInt(4)) {
 			for (int i = 0; i < possibleMoves.size(); i++) {
 				int value = 0;
 				if (possibleMoves.get(i).direction() == MoveType.HORIZONTAL 

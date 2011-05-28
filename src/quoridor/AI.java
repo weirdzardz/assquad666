@@ -172,7 +172,7 @@ public class AI {
 			Game tempGameTwo = createTempGame(moves);
 			tempGameTwo.move(moveList.get(i), tempGame.myTurn());
 
-			value = minValue(tempGameTwo.moves, desiredDepth + 1, alphaMax, betaMin);
+			value = minValue(tempGameTwo.moves, currentSearchDepth + 1, alphaMax, betaMin);
 			if (value > alphaMax) {
 				alphaMax = value;
 				bestMove = moveList.get(i);
@@ -202,8 +202,7 @@ public class AI {
 			Game tempGameTwo = createTempGame(moves);
 			tempGameTwo.move(moveList.get(i), tempGame.myTurn());
 
-			//Not sure what depth to pass in... desiredDepth - 1??
-			value = maxValue(tempGameTwo.moves, desiredDepth + 1, alphaMax, betaMin);
+			value = maxValue(tempGameTwo.moves, currentSearchDepth + 1, alphaMax, betaMin);
 			betaMin = Math.min(value._1, betaMin);
 			if (alphaMax >= betaMin) {
 				return betaMin;

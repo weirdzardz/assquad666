@@ -91,7 +91,7 @@ public class AI {
 
 					if (playerShortestPath == tempShortest) {
 						if (myValue == myTempShortest) {
-							value = value - 8;
+							value = value* 1/40 - 20;
 						} else {
 							value = value - 4;
 						}

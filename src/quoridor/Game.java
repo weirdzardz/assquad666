@@ -757,65 +757,57 @@ public class Game {
 	 */
 	public LinkedList <Move> shortestPath (Player player) {
 		Comparator <WeightedMove> comparator = new WeightedMoveComparator();
-		PriorityQueue <WeightedMove> open = new PriorityQueue <WeightedMove> (1024, comparator);
+		PriorityQueue <WeightedMove> open = new PriorityQueue <WeightedMove> (81, comparator);
 		LinkedList <WeightedMove> closed = new LinkedList <WeightedMove> ();
+		
 		WeightedMove current = null;
 		WeightedMove next = null;
-		Player tempPlayer = new Human("");//TODO add a constructor for player, or change isnotblocked to take two points or something
-		tempPlayer.goal = player.goal;
+		
+		Player tempPlayer = new Human(null);
+		tempPlayer.setGoal(player.goal);
 		Point tempPawn;
+		
 		int gcost = 0;
-		//test
-		WeightedMove initial = new WeightedMove(player.pawn().x(), player.pawn().y(), MoveType.PAWN, gcost, player, null);
-		open.add(initial);
-		while(open.peek() != null) {
+		current = new WeightedMove(player.pawn().x(), player.pawn().y(), MoveType.PAWN, gcost, player, null);
+		open.add(current);
+		boolean foundGoal = false;
+		while(open.peek() != null && !foundGoal) {
 			current = open.poll();
-			if (current.weight() == Integer.MAX_VALUE) {	//TODO avoid early exit with peek and check of weight
-				return null;
-			}
 			gcost = current.gcost() + 1;
+			
 			tempPawn = new Point(current.coord().x(), current.coord().y());
 			tempPlayer.pawn = tempPawn;
-			if (tempPlayer.goalDistance() != 0) {
-				next = new WeightedMove(current.coord().x() + 1, current.coord().y(), MoveType.PAWN, gcost, player, current);
-				if (!isNotBlocked(next, tempPlayer) || next.coord().x() >= 9) {
-					next = new WeightedMove(current.coord().x() + 1, current.coord().y(), MoveType.PAWN, Integer.MAX_VALUE, player, current);
-				}
-				if (!(open.contains(next) || closed.contains(next)))
-					open.offer(next);
-				
-				next = new WeightedMove(current.coord().x(), current.coord().y() + 1, MoveType.PAWN, gcost, player, current);
-				if (!isNotBlocked(next, tempPlayer) || next.coord().y() > 9) {
-					next = new WeightedMove(current.coord().x(), current.coord().y() + 1, MoveType.PAWN, Integer.MAX_VALUE, player, current);
-				}
-				if (!(open.contains(next) || closed.contains(next)))
-					open.offer(next);
-				
-				next = new WeightedMove(current.coord().x() - 1, current.coord().y(), MoveType.PAWN, gcost, player, current);
-				if (!isNotBlocked(next, tempPlayer) || next.coord().x() <= 1) {
-					next = new WeightedMove(current.coord().x() - 1, current.coord().y(), MoveType.PAWN, Integer.MAX_VALUE, player, current);
-				}
-				if (!(open.contains(next) || closed.contains(next)))
-					open.offer(next);
-				
-				next = new WeightedMove(current.coord().x(), current.coord().y() - 1, MoveType.PAWN, gcost, player, current);
-				if (!isNotBlocked(next, tempPlayer) || next.coord().y() < 1) {
-					next = new WeightedMove(current.coord().x(), current.coord().y() - 1, MoveType.PAWN, Integer.MAX_VALUE, player, current);
-				}
-				if (!(open.contains(next) || closed.contains(next)))
-					open.offer(next);
+			if (tempPlayer.goalDistance() == 0) {
+				foundGoal = true;
 			} else {
-				open = new PriorityQueue <WeightedMove> (1, comparator);
+				//expand current
+				next = new WeightedMove(current.coord().x() + 1, current.coord().y(), MoveType.PAWN, gcost, player, current);
+				if (isNotBlocked(next, tempPlayer) && isInBoard(next) && !(open.contains(next) || closed.contains(next)))
+						open.offer(next);
+				next = new WeightedMove(current.coord().x() - 1, current.coord().y(), MoveType.PAWN, gcost, player, current);
+				if (isNotBlocked(next, tempPlayer) && isInBoard(next) && !(open.contains(next) || closed.contains(next)))
+						open.offer(next);
+				next = new WeightedMove(current.coord().x(), current.coord().y() - 1, MoveType.PAWN, gcost, player, current);
+				if (isNotBlocked(next, tempPlayer) && isInBoard(next) && !(open.contains(next) || closed.contains(next)))
+						open.offer(next);
+				next = new WeightedMove(current.coord().x(), current.coord().y() + 1, MoveType.PAWN, gcost, player, current);
+				if (isNotBlocked(next, tempPlayer) && isInBoard(next) && !(open.contains(next) || closed.contains(next)))
+						open.offer(next);
 			}
 			closed.add(current);
-			//System.out.println("current x: " +current.coord().x() + " y: " +current.coord().y());
 		}
-		LinkedList <Move> result = new LinkedList <Move> ();
-		result.add(current);
-		while (current.parent() != null) {
-			current = current.parent();
-			result.addFirst(current);
+		
+		LinkedList <Move> result = null;
+		
+		if (foundGoal) {
+			result = new LinkedList <Move> ();
+			result.add(current);
+			while (current.parent() != null) {
+				current = current.parent();
+				result.addFirst(current);
+			}
 		}
+			
 		return result;
 		
 	}

@@ -15,13 +15,7 @@ public class WeightedMove extends Move {
 	}
 	
 	public int weight() {
-		int weight;
-		if (this.gcost == Integer.MAX_VALUE) {
-			weight = gcost;
-		} else {
-			weight = gcost + hcost;
-		}
-		return weight;
+		return gcost + hcost;
 	}
 	
 	public int hcost() {
@@ -45,6 +39,5 @@ public class WeightedMove extends Move {
 	public WeightedMove parent() {
 		return parent;
 	}
-	
 	
 }

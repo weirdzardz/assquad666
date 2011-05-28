@@ -90,7 +90,7 @@ public class AI {
 
 					if (playerShortestPath == tempShortest) {
 						if (myValue == myTempShortest) {
-							value = 0;
+							value = value - 8;
 						} else {
 							value = value - 4;
 						}
@@ -145,7 +145,7 @@ public class AI {
 	}	
 
 	private Move proMove() {
-		maxValue(game.moves, 2, -999999, +999999);
+		maxValue(game.moves, 0, -999999, +999999);
 		return null;
 	}
 
@@ -156,11 +156,12 @@ public class AI {
 		int value;
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
 
-			//********** Needs implementing ***********//
-			Random random = new Random();
-			ArrayList<Move> m = findPossibleMoves(game);
-			return Pair.pair(random.nextInt(1000), m.get(random.nextInt(m.size())));
-			//return Heuristic(state), any move
+			//****************************** Needs implementing ******************************//
+			/**/ 	Random random = new Random();											/**/
+			/**/	ArrayList<Move> m = findPossibleMoves(game);							/**/
+			/**/	return Pair.pair(random.nextInt(1000), m.get(random.nextInt(m.size())));/**/
+			/**/    //return Heuristic(state), any move										/**/
+			//********************************************************************************//
 		}
 
 		Game tempGame = createTempGame(moves);
@@ -189,11 +190,12 @@ public class AI {
 	private int minValue(LinkedList<Move> moves, int currentSearchDepth, int alphaMax, int betaMin) {
 		Pair<Integer, Move> value = null;
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
-			//********** Needs implementing ***********//
-			//return heuristic(state)
-			Random random = new Random();
-
-			return random.nextInt(1000);
+			//********** Needs implementing **********//
+			/**/ //return heuristic(state)			/**/
+			/**/ Random random = new Random();		/**/
+			/**/									/**/
+			/**/ return random.nextInt(1000);		/**/
+			//****************************************//
 		}
 
 		Game tempGame = createTempGame(moves);

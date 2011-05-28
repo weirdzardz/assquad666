@@ -1,7 +1,6 @@
 package quoridor;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
 import quoridor.Move.MoveType;
@@ -22,7 +21,7 @@ import util.Two;
  * </ul>
  * 
  * 
- * @author Sacha BŽraud <sacha.beraud@gmail.com>
+ * @author Sacha BÅ½raud <sacha.beraud@gmail.com>
  *
  */
 
@@ -39,9 +38,9 @@ public class AI {
 	}
 	
 	public Move createMove(){
-		Move move = randomMove();
-
 		//Move move = randomMove();
+
+		Move move = naiveMove();
 //		System.out.println("move: (" + move.coord().x() + ", " + move.coord.y() + ")");
 //		System.out.println("type: " + move.direction());
 				
@@ -69,63 +68,83 @@ public class AI {
 		System.out.println("myValue = " + myValue);
 
 		//Find best move
+		
+		//if other player has no more walls and ur shortestPath < his.. MOVE
 		if (myValue >= game.shortestPath(game.players().other(game.myTurn())).size() - 1) {
-			for (int i = 0; i < possibleMoves.size(); i++) {
-				int value = 0;
-				if (possibleMoves.get(i).direction() == MoveType.HORIZONTAL 
-						|| possibleMoves.get(i).direction() == MoveType.VERTICAL) {
-					
-					//create temp game
-					Player tempPl1 = new Human("Player 1");
-					Player tempPl2 = new Human("Player 2");
-					Game tempGame = new Game(Two.two(tempPl1, tempPl2));
-					
-					tempGame.initGame(null);
-					for (int j = 0; j < game.moves.size(); j++) {
-						tempGame.move(game.moves.get(j), tempGame.myTurn());
-					}
-
-					//add wall
-					tempGame.move(possibleMoves.get(i), tempGame.myTurn);
-					
-					//tempGame.display();
-					
-					//find best value path
-					value = tempGame.shortestPath(tempGame.myTurn).size() 
-							- (tempGame.shortestPath(tempGame.players.other(tempGame.myTurn)).size() - myValue);
-					
-					if (value > highestValue) {
-						highestValue = value;
-						index = i;
-					}
-					
-//					System.out.println("i = " + i + 
-//							" (" + possibleMoves.get(i).coord().x() + ", " 
-//							+ possibleMoves.get(i).coord().y() + ") " 
-//							+ possibleMoves.get(i).direction());
-//					System.out.println("index = " + index);
-//					LinkedList<Move> path = tempGame.shortestPath(tempGame.myTurn());
-//					System.out.println("Other players shortest path = " + 
-//							path.size());
-//					for (int u = 0; u < path.size(); u++) {
-//						System.out.print("(" + path.get(u).coord().x() + ", " + path.get(u).coord().y() + ") ");
-//					}
-//					System.out.println();
-//					
-//					path = tempGame.shortestPath(tempGame.players.other(tempGame.myTurn));
-//					System.out.println("My shortest path = " 
-//							+ tempGame.shortestPath(tempGame.myTurn).size());
-//					for (int u = 0; u < path.size(); u++) {
-//						System.out.print("(" + path.get(u).coord().x() + ", " + path.get(u).coord().y() + ") ");
-//					}
-//					System.out.println();
+			//placing walls infront of player first
+//			if (game.walls.isEmpty()) {
+//				int direction = 0;
+//				
+//				if (game.myTurn().equals(game.players()._1())) {
+//					direction = 1;
+//				} else {
+//					direction = -1;
+//				}
+//				
+//				Point c = game.players.other(game.myTurn()).pawn();
 //
-//					System.out.println("Value = " + value);
-				}
+//				if (direction == -1) {
+//					move = new Move(c.x(), c.y(), MoveType.HORIZONTAL);
+//				} else {
+//					move = new Move(c.x(), c.y() + direction, MoveType.HORIZONTAL);
+//				}
+//			} else {
+				for (int i = 0; i < possibleMoves.size(); i++) {
+					int value = 0;
+					if (possibleMoves.get(i).direction() == MoveType.HORIZONTAL 
+							|| possibleMoves.get(i).direction() == MoveType.VERTICAL) {
+						
+						Game tempGame = createTempGame();
+
+						//add wall
+						tempGame.move(possibleMoves.get(i), tempGame.myTurn);
+						
+						//tempGame.display();
+						
+						//find best value path
+						value = (tempGame.shortestPath(tempGame.myTurn).size() - 1)
+								- (tempGame.shortestPath(tempGame.players.other(tempGame.myTurn)).size() - myValue)
+								- wallDistance(possibleMoves.get(i));
+						
+						if (isAdjacent(possibleMoves.get(i))) {
+							//value = value + 2;
+							value++;
+						}
+						
+						if (value > highestValue) {
+							highestValue = value;
+							index = i;
+						}
+						
+//						System.out.println("i = " + i + 
+//								" (" + possibleMoves.get(i).coord().x() + ", " 
+//								+ possibleMoves.get(i).coord().y() + ") " 
+//								+ possibleMoves.get(i).direction());
+//						System.out.println("index = " + index);
+//						LinkedList<Move> path = tempGame.shortestPath(tempGame.myTurn());
+//						System.out.println("Other players shortest path = " + 
+//								path.size());
+//						for (int u = 0; u < path.size(); u++) {
+//							System.out.print("(" + path.get(u).coord().x() + ", " + path.get(u).coord().y() + ") ");
+//						}
+//						System.out.println();
+//						
+//						path = tempGame.shortestPath(tempGame.players.other(tempGame.myTurn));
+//						System.out.println("My shortest path = " 
+//								+ tempGame.shortestPath(tempGame.myTurn).size());
+//						for (int u = 0; u < path.size(); u++) {
+//							System.out.print("(" + path.get(u).coord().x() + ", " + path.get(u).coord().y() + ") ");
+//						}
+//						System.out.println();
+	//
+//						System.out.println("Value = " + value);
+					}
+//				}
+				
+				//System.out.println("Final index = " + index);
+				move = possibleMoves.get(index);
 			}
 			
-			//System.out.println("Final index = " + index);
-			move = possibleMoves.get(index);
 		} else {
 			move = game.shortestPath(game.myTurn()).get(1);
 		}
@@ -137,6 +156,78 @@ public class AI {
 		return move;
 	}	
 	
+	private boolean isAdjacent(Move move) {
+		Point player = game.players().other(game.myTurn()).pawn();
+		int direction;
+		
+		if (game.myTurn().equals(game.players()._1())) {
+			direction = 1;
+		} else {
+			direction = -1;
+		}
+		
+		if (direction == -1) {
+			if (move.coord().x() == player.x() && move.coord().y() == player.y() 
+					||	(move.coord().x() == player.x() - 1 && move.coord().y() == player.y()
+							&& move.direction() == MoveType.HORIZONTAL)
+					||	(move.coord().x() == player.x() && move.coord().y() == player.y() - 1 
+							&& move.direction() == MoveType.VERTICAL)
+					||	(move.coord().x() == player.x() + 1 && move.coord().y() == player.y() 
+							&& move.direction() == MoveType.VERTICAL)
+					||	(move.coord().x() == player.x() + 1 && move.coord().y() == player.y() - 1
+							&& move.direction() == MoveType.VERTICAL)) {
+				
+				return true;
+			}
+		} else {
+			if ((move.coord().x() == player.x() && move.coord().y == player.y() - 1
+							&& move.direction() == MoveType.VERTICAL)
+					||	(move.coord().x() == player.x() && move.coord().y == player.y()
+							&& move.direction() == MoveType.VERTICAL)
+					||	(move.coord().x() == player.x() + 1 && move.coord().y == player.y() - 1
+							&& move.direction() == MoveType.VERTICAL)
+					||	(move.coord().x() == player.x() + 1 && move.coord().y == player.y()
+							&& move.direction() == MoveType.VERTICAL)
+					||	(move.coord().x() == player.x() - 1 && move.coord().y() == player.y()
+							&& move.direction() == MoveType.HORIZONTAL)
+					||	(move.coord().x() == player.x() && move.coord().y() == player.y() + 1
+							&& move.direction() == MoveType.HORIZONTAL)) {
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private int wallDistance(Move move) {
+			Point otherPlayer = game.players().other(game.myTurn()).pawn();
+			
+		return (int) Math.sqrt(Math.pow((otherPlayer.x() - move.coord().x()), 2)
+				+ Math.pow((otherPlayer.y() - move.coord().y()), 2));
+	}
+
+	private Game createTempGame() {
+		//create temp game
+		Player tempPl1 = new Human("Player 1");
+		Player tempPl2 = new Human("Player 2");
+		Game tempGame = new Game(Two.two(tempPl1, tempPl2));
+		
+		tempGame.initGame(null);
+		for (int j = 0; j < game.moves.size(); j++) {
+			tempGame.move(game.moves.get(j), tempGame.myTurn());
+		}
+		
+		return tempGame;
+	}
+
+	private ArrayList<Move> findWallMoves() {
+			ArrayList<Move> checkList = new ArrayList<Move>();
+			
+			
+		return null;
+	}
+
 	private ArrayList<Move> findPossibleMoves() {
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		ArrayList<Move> checkList = new ArrayList<Move>();

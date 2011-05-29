@@ -117,8 +117,8 @@ public class AI {
 		} else {
 			move = game.shortestPath(game.myTurn()).get(1);
 			if (!game.isValid(move, game.myTurn())) {
-				move = game.shortestPath(game.myTurn()).get(2);
-				if (!game.isValid(move, game.myTurn())) {
+				//move = game.shortestPath(game.myTurn()).get(2);
+				//if (!game.isValid(move, game.myTurn())) {
 					//find best move by comparing shortest path 
 					Game tempGame = createTempGame(game.moves);
 					Game tempGameTwo = createTempGame(game.moves);
@@ -126,24 +126,72 @@ public class AI {
 					Point p = game.myTurn().pawn();
 					Move tempMove = new Move(p.x() + 1, p.y(), MoveType.PAWN);
 					Move tempMoveTwo = new Move(p.x() - 1, p.y(), MoveType.PAWN);
-
+					Move tempMoveThree = new Move(p.x(), p.y() + 1, MoveType.PAWN);
+					Move tempMoveFour = new Move(p.x(), p.y() - 1, MoveType.PAWN);
+					
 					if (tempGame.isValid(tempMove, tempGame.myTurn())) {
-						move = tempMove;
-						if (tempGame.isValid(tempMoveTwo, tempGame.myTurn())) {
-							tempGame.move(tempMove, game.myTurn());
-							tempGameTwo.move(tempMoveTwo, game.myTurn());
-
-							if (tempGame.shortestPath(tempGame.players().other(tempGame.myTurn())).size() <
-									tempGameTwo.shortestPath(tempGameTwo.players().other(tempGameTwo.myTurn())).size())	{
+						if (!game.isValid(move, game.myTurn())) {
+							move = tempMove;
+						} else {
+							tempGame.move(tempMove, tempGame.myTurn());
+							tempGameTwo.move(move, tempGameTwo.myTurn());
+							if (tempGame.shortestPath(tempGame.myTurn()).size() < tempGameTwo.shortestPath(tempGameTwo.myTurn()).size())
 								move = tempMove;
-							} else {
-								move = tempMoveTwo;
-							}
+							tempGame.undo();
+							tempGameTwo.undo();
 						}
 					} else if (tempGame.isValid(tempMoveTwo, tempGame.myTurn())) {
-						move = tempMoveTwo;
+						if (!game.isValid(move, game.myTurn())) {
+							move = tempMoveTwo;
+						} else {
+							tempGame.move(tempMoveTwo, tempGame.myTurn());
+							tempGameTwo.move(move, tempGameTwo.myTurn());
+							if (tempGame.shortestPath(tempGame.myTurn()).size() < tempGameTwo.shortestPath(tempGameTwo.myTurn()).size())
+								move = tempMoveTwo;
+							tempGame.undo();
+							tempGameTwo.undo();
+						}
+					} else if (tempGame.isValid(tempMoveThree, tempGame.myTurn())) {
+						if (!game.isValid(move, game.myTurn())) {
+							move = tempMoveThree;
+						} else {
+							tempGame.move(tempMoveThree, tempGame.myTurn());
+							tempGameTwo.move(move, tempGameTwo.myTurn());
+							if (tempGame.shortestPath(tempGame.myTurn()).size() < tempGameTwo.shortestPath(tempGameTwo.myTurn()).size())
+								move = tempMoveThree;
+							tempGame.undo();
+							tempGameTwo.undo();
+						}
+					} else {
+						if (!game.isValid(move, game.myTurn())) {
+							move = tempMoveFour;
+						} else {
+							tempGame.move(tempMoveFour, tempGame.myTurn());
+							tempGameTwo.move(move, tempGameTwo.myTurn());
+							if (tempGame.shortestPath(tempGame.myTurn()).size() < tempGameTwo.shortestPath(tempGameTwo.myTurn()).size())
+								move = tempMoveFour;
+							tempGame.undo();
+							tempGameTwo.undo();
+						}
 					}
-				}
+
+//					if (tempGame.isValid(tempMove, tempGame.myTurn())) {
+//						move = tempMove;
+//						if (tempGame.isValid(tempMoveTwo, tempGame.myTurn())) {
+//							tempGame.move(tempMove, game.myTurn());
+//							tempGameTwo.move(tempMoveTwo, game.myTurn());
+//
+//							if (tempGame.shortestPath(tempGame.players().other(tempGame.myTurn())).size() <
+//									tempGameTwo.shortestPath(tempGameTwo.players().other(tempGameTwo.myTurn())).size())	{
+//								move = tempMove;
+//							} else {
+//								move = tempMoveTwo;
+//							}
+//						}
+//					} else if (tempGame.isValid(tempMoveTwo, tempGame.myTurn())) {
+//						move = tempMoveTwo;
+//					}
+				//}
 			}
 		}
 

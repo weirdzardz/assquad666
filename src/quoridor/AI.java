@@ -1,4 +1,4 @@
-package quoridor;
+﻿package quoridor;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,6 +7,7 @@ import java.util.Random;
 import quoridor.Move.MoveType;
 import util.Pair;
 import util.Two;
+
 
 /**
  * AI is called to generate a move based on game state and a smartness of a move.
@@ -95,7 +96,7 @@ public class AI {
 					//calculate value of each move
 					value = (tempGame.shortestPath(tempGame.myTurn).size())
 					- (myTempShortest - myValue)
-					- wallDistance(possibleMoves.get(i), tempGame, tempGame.players().other(tempGame.myTurn()));
+					- wallDistance(possibleMoves.get(i), game, 0);
 
 					if (playerShortestPath == tempShortest) {
 						if (myValue == myTempShortest) {
@@ -159,7 +160,7 @@ public class AI {
 		return result._2();
 	}
 
-	private int desiredDepth = 2;
+	private int desiredDepth = 3;
 
 	/**
 	 * The first part of the alpha-beta pruning 
@@ -177,6 +178,7 @@ public class AI {
 		
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
 			ArrayList<Move> m = findPossibleMoves(tempGame);
+			//any move?
 			return Pair.pair(heuristic(moves), m.get(0));					
 		}
 
@@ -241,16 +243,26 @@ public class AI {
 		int value = 0;
 
 		Game tempGame = createTempGame(moves);
-		Player player = tempGame.players().other(tempGame.myTurn);
+//		if (player.equals(tempGame.players()._2())) {
+//			myShortestPath = tempGame.shortestPath(tempGame.players()._1()).size();
+//			opponentShortestPath = tempGame.shortestPath(tempGame.players()._2()).size();
+//			opponentFences = tempGame.players()._2().wallsLeft();
+//			myFences = tempGame.players()._1.wallsLeft();
+//		} else {
+//			myShortestPath = tempGame.shortestPath(tempGame.players()._2()).size();
+//			opponentShortestPath = tempGame.shortestPath(tempGame.players()._1()).size();
+//			opponentFences = tempGame.players()._1().wallsLeft();
+//			myFences = tempGame.players()._2.wallsLeft();
+//		}
 		
 		if (player.equals(tempGame.players()._1())) {
 			value = 6*(tempGame.shortestPath(tempGame.players()._2()).size())
 			- (tempGame.shortestPath(tempGame.players()._1()).size())
-			- wallDistance(moves.getLast(), tempGame, tempGame.players()._1());
+			- wallDistance(moves.getLast(), tempGame, 0);
 		} else {
 			value = 6*(tempGame.shortestPath(tempGame.players()._1()).size())
 			- (tempGame.shortestPath(tempGame.players()._2()).size())
-			- wallDistance(moves.getLast(), tempGame, tempGame.players()._2());
+			- wallDistance(moves.getLast(), tempGame, 1);
 		}
 		
 		if (moves.getLast().direction() == MoveType.PAWN) {
@@ -334,10 +346,10 @@ public class AI {
 	 * @param move the placement of the wall
 	 * @return the int value of the straight line distance
 	 */
-	private int wallDistance(Move move, Game game, Player player) {
+	private int wallDistance(Move move, Game game, int i) {
 		Point otherPlayer;
 		
-		if (player.equals(game.myTurn())) {
+		if (i == 0) {
 			otherPlayer = game.players().other(game.myTurn()).pawn();
 		} else {
 			otherPlayer = game.myTurn().pawn();

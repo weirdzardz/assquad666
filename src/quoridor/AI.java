@@ -1,4 +1,4 @@
-﻿package quoridor;
+package quoridor;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -158,7 +158,7 @@ public class AI {
 		return result._2();
 	}
 
-	private int desiredDepth = 1;
+	private int desiredDepth = 2;
 
 	/**
 	 * The first part of the alpha-beta pruning 
@@ -176,7 +176,6 @@ public class AI {
 		
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
 			ArrayList<Move> m = findPossibleMoves(tempGame);
-			//any move?
 			return Pair.pair(heuristic(moves), m.get(0));					
 		}
 
@@ -241,17 +240,7 @@ public class AI {
 		int value = 0;
 
 		Game tempGame = createTempGame(moves);
-//		if (player.equals(tempGame.players()._2())) {
-//			myShortestPath = tempGame.shortestPath(tempGame.players()._1()).size();
-//			opponentShortestPath = tempGame.shortestPath(tempGame.players()._2()).size();
-//			opponentFences = tempGame.players()._2().wallsLeft();
-//			myFences = tempGame.players()._1.wallsLeft();
-//		} else {
-//			myShortestPath = tempGame.shortestPath(tempGame.players()._2()).size();
-//			opponentShortestPath = tempGame.shortestPath(tempGame.players()._1()).size();
-//			opponentFences = tempGame.players()._1().wallsLeft();
-//			myFences = tempGame.players()._2.wallsLeft();
-//		}
+		Player player = tempGame.players().other(tempGame.myTurn);
 		
 		if (player.equals(tempGame.players()._1())) {
 			value = 6*(tempGame.shortestPath(tempGame.players()._2()).size())

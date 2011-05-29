@@ -1,6 +1,10 @@
 package quoridor;
 
 import java.util.LinkedList;
+import java.util.List;
+
+import quoridor.Command.CommandType;
+
 import util.Two;
 
 /**
@@ -55,6 +59,24 @@ public class Validator {
 		return true;
 	}
 
+	public boolean check(String string){
+		Command c = new Command(string);
+		if (!c.type().equals(CommandType.MOVES) && !c.type().equals(CommandType.MOVE) )
+			return false;
+		else
+			return check(c.moves());
+		
+	}
 
+	public boolean check(List<String> testMoves) {
+		if (testMoves == null)
+			return false;
+		StringBuilder stringBuilder = new StringBuilder();
+		for (String stringbit: testMoves) {
+			stringBuilder.append(stringbit + " ");
+		}
+		return check(new String(stringBuilder));
+	}
+	
 
 }

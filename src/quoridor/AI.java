@@ -95,7 +95,7 @@ public class AI {
 					//calculate value of each move
 					value = (tempGame.shortestPath(tempGame.myTurn).size())
 					- (myTempShortest - myValue)
-					- wallDistance(possibleMoves.get(i));
+					- wallDistance(possibleMoves.get(i), tempGame, tempGame.players().other(tempGame.myTurn()));
 
 					if (playerShortestPath == tempShortest) {
 						if (myValue == myTempShortest) {
@@ -159,7 +159,7 @@ public class AI {
 		return result._2();
 	}
 
-	private int desiredDepth = 2;
+	private int desiredDepth = 1;
 
 	/**
 	 * The first part of the alpha-beta pruning 
@@ -170,25 +170,26 @@ public class AI {
 	 * @return a Pair of argument, the alpha value of the move and the move 
 	 */
 	private Pair<Integer, Move> maxValue(LinkedList<Move> moves, int currentSearchDepth, int alphaMax, int betaMin) {
-		Move bestMove = null;
-		int value;
+		Game tempGame = createTempGame(moves);
+		ArrayList<Move> moveList;
+		Move bestMove;
+		int value = (int) Double.NEGATIVE_INFINITY;
+		
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
-			Game tempGame = createTempGame(moves);
 			ArrayList<Move> m = findPossibleMoves(tempGame);
 			//any move?
 			return Pair.pair(heuristic(moves), m.get(0));					
 		}
 
-		Game tempGame = createTempGame(moves);
-		ArrayList<Move> moveList = findPossibleMoves(tempGame);
-
+		moveList = findPossibleMoves(tempGame);
 		bestMove = moveList.get(0);
-
 		for (int i = 0; i < moveList.size(); i++) {
 			Game tempGameTwo = createTempGame(moves);
-			tempGameTwo.move(moveList.get(i), tempGame.myTurn());
-
+			tempGameTwo.move(moveList.get(i), tempGameTwo.myTurn());
+			System.out.println(tempGameTwo.moves);
+			
 			value = minValue(tempGameTwo.moves, currentSearchDepth + 1, alphaMax, betaMin);
+			System.out.println(value);
 			if (value > alphaMax) {
 				alphaMax = value;
 				bestMove = moveList.get(i);
@@ -220,7 +221,7 @@ public class AI {
 		ArrayList<Move> moveList = findPossibleMoves(tempGame);
 		for (int i = 0; i < moveList.size(); i++) {
 			Game tempGameTwo = createTempGame(moves);
-			tempGameTwo.move(moveList.get(i), tempGame.myTurn());
+			tempGameTwo.move(moveList.get(i), tempGameTwo.myTurn());
 
 			value = maxValue(tempGameTwo.moves, currentSearchDepth + 1, alphaMax, betaMin);
 			betaMin = Math.min(value._1, betaMin);
@@ -239,22 +240,35 @@ public class AI {
 	 */
 	private int heuristic(LinkedList<Move> moves) {
 		int value = 0;
-		int C1 = 8;
-		int C2 = 4;
-		int C3 = 5;
-		int C4 = 1;
-		int C5 = 2;
-		int C6 = 2;
-		
-		//who is "my" and how to refer to it. Might be wrong here
 
 		Game tempGame = createTempGame(moves);
-		int opponentShortestPath = tempGame.shortestPath(tempGame.myTurn()).size();
-		int myShortestPath = tempGame.shortestPath(tempGame.players().other(tempGame.myTurn())).size();
-		int opponentFences = tempGame.myTurn().wallsLeft();
-		int myFences = tempGame.players().other(tempGame.myTurn()).wallsLeft();
+//		if (player.equals(tempGame.players()._2())) {
+//			myShortestPath = tempGame.shortestPath(tempGame.players()._1()).size();
+//			opponentShortestPath = tempGame.shortestPath(tempGame.players()._2()).size();
+//			opponentFences = tempGame.players()._2().wallsLeft();
+//			myFences = tempGame.players()._1.wallsLeft();
+//		} else {
+//			myShortestPath = tempGame.shortestPath(tempGame.players()._2()).size();
+//			opponentShortestPath = tempGame.shortestPath(tempGame.players()._1()).size();
+//			opponentFences = tempGame.players()._1().wallsLeft();
+//			myFences = tempGame.players()._2.wallsLeft();
+//		}
 		
-		value = C1 * (C2* myShortestPath - C3*opponentShortestPath) + C4 *(C5*myFences-C6*opponentFences);
+		if (player.equals(tempGame.players()._1())) {
+			value = 6*(tempGame.shortestPath(tempGame.players()._2()).size())
+			- (tempGame.shortestPath(tempGame.players()._1()).size())
+			- wallDistance(moves.getLast(), tempGame, tempGame.players()._1());
+		} else {
+			value = 6*(tempGame.shortestPath(tempGame.players()._1()).size())
+			- (tempGame.shortestPath(tempGame.players()._2()).size())
+			- wallDistance(moves.getLast(), tempGame, tempGame.players()._2());
+		}
+		
+		if (moves.getLast().direction() == MoveType.PAWN) {
+			value = value - 2;
+		}
+		
+
 		return value;
 	}
 
@@ -331,8 +345,14 @@ public class AI {
 	 * @param move the placement of the wall
 	 * @return the int value of the straight line distance
 	 */
-	private int wallDistance(Move move) {
-		Point otherPlayer = game.players().other(game.myTurn()).pawn();
+	private int wallDistance(Move move, Game game, Player player) {
+		Point otherPlayer;
+		
+		if (player.equals(game.myTurn())) {
+			otherPlayer = game.players().other(game.myTurn()).pawn();
+		} else {
+			otherPlayer = game.myTurn().pawn();
+		}
 
 		return (int) Math.sqrt(Math.pow((otherPlayer.x() - move.coord().x()), 2)
 				+ Math.pow((otherPlayer.y() - move.coord().y()), 2));

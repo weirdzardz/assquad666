@@ -71,18 +71,20 @@ public class GameFactory {
 				|| command.type().equals(CommandType.MOVE) 
 				|| command.type().equals(CommandType.SAVE_GAME)
 				|| command.type().equals(CommandType.UNDO)
-				|| command.type().equals(CommandType.REDO)) {
-			if (command.type().equals(CommandType.MOVE)){
-				System.out.println("You need to make a new game before making a move, try again:");
-			} else if(command.type().equals(CommandType.SAVE_GAME)){
-				System.out.println("You need to make a new game before saving, try again:");
-			} else if(command.type().equals(CommandType.UNDO)){
-				System.out.println("You need to make a new game before using undo, try again:");
-			} else if(command.type().equals(CommandType.REDO)){
-				System.out.println("You need to make a new game before using redo, try again:");
-			} else{
-				System.out.println("Input a command:");
-			}
+				|| command.type().equals(CommandType.REDO)
+				|| command.type().equals(CommandType.HELP)) {
+
+				if (command.type().equals(CommandType.MOVE)){
+					System.out.println("You need to make a new game before making a move, try again:");
+				} else if(command.type().equals(CommandType.SAVE_GAME)){
+					System.out.println("You need to make a new game before saving, try again:");
+				} else if(command.type().equals(CommandType.UNDO)){
+					System.out.println("You need to make a new game before using undo, try again:");
+				} else if(command.type().equals(CommandType.REDO)){
+					System.out.println("You need to make a new game before using redo, try again:");
+				} else{
+					System.out.println("Input a command:");
+				}
 			line = input.nextLine ().toLowerCase ();	
 			command = new Command(line);
 		}

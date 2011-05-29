@@ -30,7 +30,7 @@ import quoridor.Move.MoveType;
 
 public class Command {
 	
-	public enum CommandType {INVALID, NEW_GAME, LOAD_GAME, SAVE_GAME, NEW_WITH_MOVES, MOVE, UNDO, REDO, MOVES};	
+	public enum CommandType {INVALID, NEW_GAME, LOAD_GAME, SAVE_GAME, NEW_WITH_MOVES, MOVE, UNDO, REDO, MOVES,HELP};	
 	CommandType type;
 	String fileName;		
 	LinkedList<Move> moves = new LinkedList<Move>();
@@ -114,6 +114,8 @@ public class Command {
 				this.type = CommandType.REDO;
 		} else if(bits[0].equals("help")){
 				printHelp();
+				this.type = CommandType.HELP;
+				return;
 		} else {
 			
 			if (bits.length > 1){	

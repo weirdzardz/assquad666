@@ -223,7 +223,6 @@ public class Game {
 	}
 	
 	
-	
 	public boolean undo(){
 		if(moves.size() > 0){
 			if(players.other(myTurn()).type().equals("AI")){
@@ -234,6 +233,7 @@ public class Game {
 					redoMoves.add(moves.removeLast());
 				} else {
 					walls.removeLast();
+					myTurn().wall++;
 					redoMoves.add(moves.removeLast());
 				}
 				changeTurn();
@@ -243,6 +243,7 @@ public class Game {
 					redoMoves.add(moves.removeLast());
 				} else {
 					walls.removeLast();
+					myTurn().wall++;
 					redoMoves.add(moves.removeLast());
 				}
 			} else {
@@ -253,6 +254,7 @@ public class Game {
 					redoMoves.add(moves.removeLast());
 				} else {
 					walls.removeLast();
+					myTurn().wall++;
 					redoMoves.add(moves.removeLast());
 				}
 			}
@@ -602,19 +604,23 @@ public class Game {
 		Player other = players.other(p);
 		if( p.pawn().x() == other.pawn().x() 
 				&& p.pawn().y() == other.pawn().y() - 1 
-				&& !isNotBlocked(new Move(other.pawn().x(), other.pawn().y()+1,MoveType.PAWN),other))
+				&& (!isNotBlocked(new Move(other.pawn().x(), other.pawn().y()+1,MoveType.PAWN),other)
+						|| other.pawn().y() == 9))
 			return true;
 		else if ( p.pawn().x() == other.pawn().x() 
 				&& p.pawn().y() == other.pawn().y() +1 
-				&& !isNotBlocked(new Move(other.pawn().x(), other.pawn().y()-1,MoveType.PAWN),other))
+				&& (!isNotBlocked(new Move(other.pawn().x(), other.pawn().y()-1,MoveType.PAWN),other)
+						|| other.pawn().y() == 1))
 			return true;
 		else if ( p.pawn().x() == other.pawn().x() - 1
 				&& p.pawn().y() == other.pawn().y() 
-				&& !isNotBlocked(new Move(other.pawn().x() + 1, other.pawn().y(),MoveType.PAWN),other))
+				&& (!isNotBlocked(new Move(other.pawn().x() + 1, other.pawn().y(),MoveType.PAWN),other)
+						|| other.pawn().x() == 8))
 			return true;
 		else if ( p.pawn().x() == other.pawn().x() + 1
 				&& p.pawn().y() == other.pawn().y() 
-				&& !isNotBlocked(new Move(other.pawn().x() - 1, other.pawn().y(),MoveType.PAWN),other))
+				&& (!isNotBlocked(new Move(other.pawn().x() - 1, other.pawn().y(),MoveType.PAWN),other)
+						|| other.pawn().y() == 0))
 			return true;
 		else {
 			return false;

@@ -63,7 +63,10 @@ Project Requirements Tick-off:
 	* Board Display + Game Initialisation...............done
 	* Moves + User Interaction..........................done
 	* Other features (save, load, undo, redo)...........done
-		
+	* Validity of one move..............................done
+	* Validity of a list of moves.......................done
+	
+	
 		Implementation Total
 	* Code quality and style............................awesome
 	* Unit tests:

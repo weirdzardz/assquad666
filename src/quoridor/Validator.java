@@ -55,9 +55,6 @@ public class Validator {
 		return true;
 	}
 
-	public boolean check(String string){
-		return false;
-	}
-	
+
 
 }

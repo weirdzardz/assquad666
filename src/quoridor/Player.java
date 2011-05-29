@@ -47,6 +47,10 @@ public abstract class Player {
 		return this.name;
 	}
 	
+	/**
+	 * The list of positions the player had during the game.
+	 * @return the list of positions the player had during the game
+	 */
 	public LinkedList<Point> positions(){
 		return this.positions;
 	}
@@ -56,10 +60,17 @@ public abstract class Player {
 	 */
 	public abstract String type();
 	
+	/**
+	 * Represents the number of walls left a player can place.
+	 * @return the number of walls left a player can place
+	 */
 	public int wallsLeft() {
 		return wall;
 	}
 	
+	/**
+	 * Remove a wall from the player's stack because it has been placed.
+	 */
 	public void deductWall() {
 		wall--;
 	}
@@ -80,6 +91,10 @@ public abstract class Player {
 		return goal;
 	}
 
+	/**
+	 * The level of an AI player.
+	 * @return the level of an AI player.
+	 */
 	public abstract String level();
 	
 	

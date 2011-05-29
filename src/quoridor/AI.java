@@ -8,7 +8,6 @@ import quoridor.Move.MoveType;
 import util.Pair;
 import util.Two;
 
-
 /**
  * AI is called to generate a move based on game state and a smartness of a move.
  * 

@@ -177,9 +177,11 @@ public class Command {
 			if(Character.isLetter(bit.charAt(0)) 
 					&& Character.isDigit(bit.charAt(1))){
 				if(bit.charAt(2) == 'h'){
-						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.HORIZONTAL);
+						String newbit = convertWallFormat(bit);
+						return new Move(newbit.charAt(0) - 'a', newbit.charAt(1) - '0', MoveType.HORIZONTAL);
 				} else if(bit.charAt(2) == 'v'){
-						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.VERTICAL);
+						String newbit = convertWallFormat(bit);
+						return new Move(newbit.charAt(0) - 'a', newbit.charAt(1) - '0', MoveType.VERTICAL);
 				} else {
 					System.out.println(bit + " is not a valid move.");
 					return null;
@@ -196,6 +198,37 @@ public class Command {
 		}
 	}
 	
+	
+	/**
+	 * This function converts the wall notation from the format we used during these past weeks
+	 * to the one used in the ProvidedTests.java. We would not need that if the tests had been released
+	 * or if an explicit notation had been given earlier.
+	 * @param bit the string representing the wall move to be converted
+	 * @return new wall move string according to the provided test format
+	 */
+	public String convertWallFormat(String bit){
+		String retbit = "";
+
+		char tmp;
+		
+		if(bit.charAt(2) == 'h'){
+			retbit += bit.charAt(0);
+			tmp = bit.charAt(1);
+			tmp++;
+			retbit += tmp;
+			
+		} else {
+			
+			tmp = bit.charAt(0);
+			tmp++;
+			retbit += tmp;
+			retbit += bit.charAt(1);
+		}
+		
+		
+		retbit += bit.charAt(2);
+		return retbit;
+	}
 	
 	
 	

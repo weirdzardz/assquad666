@@ -3,7 +3,6 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
-
 import quoridor.Move.MoveType;
 import util.Pair;
 import util.Two;

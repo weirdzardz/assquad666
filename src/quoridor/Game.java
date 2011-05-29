@@ -743,7 +743,6 @@ public class Game {
 		if ((shortestPath(players._1) != null) && (shortestPath(players._2) != null)){
 			valid = true;
 		} else {
-			System.out.println("not valid path dude");
 			valid = false;
 		}
 		walls.remove(w);

@@ -96,7 +96,7 @@ public class AI {
 					//calculate value of each move
 					value = (tempGame.shortestPath(tempGame.myTurn).size())
 					- (myTempShortest - myValue)
-					- wallDistance(possibleMoves.get(i), game, 0);
+					- wallDistance(possibleMoves.get(i), tempGame, tempGame.players().other(tempGame.myTurn()));
 
 					if (playerShortestPath == tempShortest) {
 						if (myValue == myTempShortest) {
@@ -258,11 +258,11 @@ public class AI {
 		if (player.equals(tempGame.players()._1())) {
 			value = 6*(tempGame.shortestPath(tempGame.players()._2()).size())
 			- (tempGame.shortestPath(tempGame.players()._1()).size())
-			- wallDistance(moves.getLast(), tempGame, 0);
+			- wallDistance(moves.getLast(), tempGame, tempGame.players()._1());
 		} else {
 			value = 6*(tempGame.shortestPath(tempGame.players()._1()).size())
 			- (tempGame.shortestPath(tempGame.players()._2()).size())
-			- wallDistance(moves.getLast(), tempGame, 1);
+			- wallDistance(moves.getLast(), tempGame, tempGame.players()._2());
 		}
 		
 		if (moves.getLast().direction() == MoveType.PAWN) {
@@ -346,10 +346,10 @@ public class AI {
 	 * @param move the placement of the wall
 	 * @return the int value of the straight line distance
 	 */
-	private int wallDistance(Move move, Game game, int i) {
+	private int wallDistance(Move move, Game game, Player player) {
 		Point otherPlayer;
 		
-		if (i == 0) {
+		if (player.equals(game.myTurn())) {
 			otherPlayer = game.players().other(game.myTurn()).pawn();
 		} else {
 			otherPlayer = game.myTurn().pawn();

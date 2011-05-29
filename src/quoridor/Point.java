@@ -21,7 +21,7 @@ package quoridor;
 
 public class Point {
 
-	
+
 	public int x, y;
 
 	/**
@@ -36,7 +36,7 @@ public class Point {
 	}
 
 
-	
+
 	/**
 	 * The letter coordinate of this Point.
 	 * @return The letter coordinate of this Point.
@@ -44,7 +44,7 @@ public class Point {
 	public int x(){
 		return this.x;
 	}
-	
+
 	/**
 	 * The number coordinate of this Point.
 	 * @return The number coordinate of this Point.
@@ -52,7 +52,7 @@ public class Point {
 	public int y(){
 		return this.y;
 	}
-	
+
 	//not really useful
 	@Override
 	public String toString()

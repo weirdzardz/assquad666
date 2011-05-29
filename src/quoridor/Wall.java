@@ -23,11 +23,11 @@ import quoridor.Move.MoveType;
  */
 
 public class Wall {
-	
+
 	public Point pos;
 	public MoveType direction;
-	
-	
+
+
 	/**
 	 * Constructor. Creates a wall when called.
 	 * @param pos The position from which the wall will be drawn (top left corner of the square having this position on the board).
@@ -37,8 +37,8 @@ public class Wall {
 		this.pos = pos;
 		this.direction = moveType;
 	}
-	
-	
+
+
 	/**
 	 * The position from which the wall will be drawn (top left corner of the square having this position on the board).
 	 * @return The position from which the wall will be drawn (top left corner of the square having this position on the board).
@@ -46,7 +46,7 @@ public class Wall {
 	public Point pos(){
 		return this.pos;
 	}
-	
+
 	/**
 	 * The direction of the wall (horizontal or vertical).
 	 * @return The direction of the wall (horizontal or vertical).
@@ -54,5 +54,5 @@ public class Wall {
 	public MoveType dir(){
 		return this.direction;
 	}
-	
+
 }

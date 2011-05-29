@@ -29,12 +29,12 @@ import quoridor.Move.MoveType;
 
 
 public class Command {
-	
+
 	public enum CommandType {INVALID, NEW_GAME, LOAD_GAME, SAVE_GAME, NEW_WITH_MOVES, MOVE, UNDO, REDO, MOVES,HELP};	
 	CommandType type;
 	String fileName;		
 	LinkedList<Move> moves = new LinkedList<Move>();
-	
+
 	/**
 	 * The type of Command (new, load, save, new(with moves) or a move).
 	 * @return The type of Command (new, load, save, new(with moves) or a move). 
@@ -42,7 +42,7 @@ public class Command {
 	public CommandType type(){
 		return type;
 	}
-	
+
 	/**
 	 * The name of the file to be loaded if it is a load Command.
 	 * @return The name of the file to be loaded if it is a load Command.
@@ -50,7 +50,7 @@ public class Command {
 	public String fileName(){
 		return fileName;
 	}
-	
+
 	/**
 	 * The move to be done if it is a move Command.
 	 * @return The move to be done if it is a move Command.
@@ -59,24 +59,24 @@ public class Command {
 		assert moves != null;
 		return moves.getFirst();
 	}
-	
+
 	/**
 	 * The list of the moves to be done if it is a new(with moves) Command.
 	 * @return The list of the moves to be done if it is a new(with moves) Command.
 	 */
 	public LinkedList<Move> moves(){
-		
+
 		return moves;
 	}
-	
-	
+
+
 	/**
 	 * Constructor function. Parses and stores input.
 	 * @param input The String input into stdin that this class has to parse and store.
 	 */
 	public Command(String input){
 		String[] bits = input.split("\\s+");
-		
+
 		if(bits[0].equals("load")){			
 			if(bits.length == 2){
 				fileName = bits[1];
@@ -109,15 +109,15 @@ public class Command {
 				this.type = CommandType.INVALID;
 			}		
 		} else if (bits[0].equals("undo")){			
-				this.type = CommandType.UNDO;				
+			this.type = CommandType.UNDO;				
 		} else if (bits[0].equals("redo")){			
-				this.type = CommandType.REDO;
+			this.type = CommandType.REDO;
 		} else if(bits[0].equals("help")){
-				printHelp();
-				this.type = CommandType.HELP;
-				return;
+			printHelp();
+			this.type = CommandType.HELP;
+			return;
 		} else {
-			
+
 			if (bits.length > 1){	
 				for(int j = 0; j<bits.length;j++){
 					Move temp = parseBit(bits[j]);
@@ -164,10 +164,10 @@ public class Command {
 	 * @return A valid move (in terms of characters used).
 	 */
 	private Move parseBit(String bit) {
-			
+
 		if(bit.length() == 2){
 			if(Character.isLetter(bit.charAt(0)) 
-				&& Character.isDigit(bit.charAt(1))){
+					&& Character.isDigit(bit.charAt(1))){
 				return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.PAWN);
 			} else {
 				System.out.println(bit + " is not a valid move.");
@@ -177,11 +177,11 @@ public class Command {
 			if(Character.isLetter(bit.charAt(0)) 
 					&& Character.isDigit(bit.charAt(1))){
 				if(bit.charAt(2) == 'h'){
-						String newbit = convertWallFormat(bit);
-						return new Move(newbit.charAt(0) - 'a', newbit.charAt(1) - '0', MoveType.HORIZONTAL);
+					String newbit = convertWallFormat(bit);
+					return new Move(newbit.charAt(0) - 'a', newbit.charAt(1) - '0', MoveType.HORIZONTAL);
 				} else if(bit.charAt(2) == 'v'){
-						String newbit = convertWallFormat(bit);
-						return new Move(newbit.charAt(0) - 'a', newbit.charAt(1) - '0', MoveType.VERTICAL);
+					String newbit = convertWallFormat(bit);
+					return new Move(newbit.charAt(0) - 'a', newbit.charAt(1) - '0', MoveType.VERTICAL);
 				} else {
 					System.out.println(bit + " is not a valid move.");
 					return null;
@@ -190,15 +190,15 @@ public class Command {
 				System.out.println(bit + " is not a valid move.");
 				return null;
 			}
-			
-			
+
+
 		} else {
 			System.out.println(bit + " is not a valid command.");
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * This function converts the wall notation from the format we used during these past weeks
 	 * to the one used in the ProvidedTests.java. We would not need that if the tests had been released
@@ -210,26 +210,26 @@ public class Command {
 		String retbit = "";
 
 		char tmp;
-		
+
 		if(bit.charAt(2) == 'h'){
 			retbit += bit.charAt(0);
 			tmp = bit.charAt(1);
 			tmp++;
 			retbit += tmp;
-			
+
 		} else {
-			
+
 			tmp = bit.charAt(0);
 			tmp++;
 			retbit += tmp;
 			retbit += bit.charAt(1);
 		}
-		
-		
+
+
 		retbit += bit.charAt(2);
 		return retbit;
 	}
-	
-	
-	
+
+
+
 }

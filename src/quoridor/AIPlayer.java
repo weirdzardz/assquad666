@@ -22,16 +22,16 @@ package quoridor;
 public class AIPlayer extends Player{
 
 
-	
+
 	public AIPlayer(String name){
 		this.name = name;
 	}
-	
+
 	@Override
 	public String type() {
 		return "AI";
 	}
-	
+
 	@Override
 	public String level(){
 		return this.level;

@@ -36,20 +36,20 @@ import util.Two;
  */
 
 public class GameFactory {
-	
+
 	/**
 	 * Main Function of the program. It's where it all start.
 	 * @param args Arguments passed to the main function of the program to trigger specific use of the program. Not used here.
 	 */
 	public static void main(String[] args){
-		
+
 		System.out.println("Welcome to Quoridor AssQuad666 !");
 		while(true){
 			run();
 		}
 	}
-	
-	
+
+
 	/**
 	 * runs the Game Factory by getting input, calling some parsing and calling appropriate functions.
 	 */
@@ -59,7 +59,7 @@ public class GameFactory {
 		System.out.println("Input a command:");
 		String line = input.nextLine ().toLowerCase ();
 		Command command = new Command(line);
-		
+
 		while(command.type().equals(CommandType.INVALID) 
 				|| command.type().equals(CommandType.MOVE) 
 				|| command.type().equals(CommandType.SAVE_GAME)
@@ -67,37 +67,37 @@ public class GameFactory {
 				|| command.type().equals(CommandType.REDO)
 				|| command.type().equals(CommandType.HELP)) {
 
-				if (command.type().equals(CommandType.MOVE)){
-					System.out.println("You need to make a new game before making a move, try again:");
-				} else if(command.type().equals(CommandType.SAVE_GAME)){
-					System.out.println("You need to make a new game before saving, try again:");
-				} else if(command.type().equals(CommandType.UNDO)){
-					System.out.println("You need to make a new game before using undo, try again:");
-				} else if(command.type().equals(CommandType.REDO)){
-					System.out.println("You need to make a new game before using redo, try again:");
-				} else{
-					System.out.println("Input a command:");
-				}
+			if (command.type().equals(CommandType.MOVE)){
+				System.out.println("You need to make a new game before making a move, try again:");
+			} else if(command.type().equals(CommandType.SAVE_GAME)){
+				System.out.println("You need to make a new game before saving, try again:");
+			} else if(command.type().equals(CommandType.UNDO)){
+				System.out.println("You need to make a new game before using undo, try again:");
+			} else if(command.type().equals(CommandType.REDO)){
+				System.out.println("You need to make a new game before using redo, try again:");
+			} else{
+				System.out.println("Input a command:");
+			}
 			line = input.nextLine ().toLowerCase ();	
 			command = new Command(line);
 		}
-		
-			players = getPlayers();
-		
+
+		players = getPlayers();
+
 		if(command.type().equals(CommandType.NEW_GAME)){
 			newGame(players);
-			
+
 		} else if(command.type().equals(CommandType.LOAD_GAME)){
 			loadGame(command.fileName(), players);
-			
+
 		} else if(command.type().equals(CommandType.NEW_WITH_MOVES)){
 			newGameWithMoves(command.moves(), players);	
 		} 
-		
+
 
 	}
-	
-	
+
+
 	/**
 	 * Get the players playing the game, as well as their type (AI or Human) and their name.
 	 * @return a set of Two Players
@@ -106,13 +106,13 @@ public class GameFactory {
 		Scanner input = new Scanner (System.in);
 		Player playerOne;
 		Player playerTwo;
-		
+
 		System.out.println("How many AI players in this game? Enter 0, 1, or 2.");
 		String line = input.nextLine ().toLowerCase ();
 		if(line.isEmpty())
 			return getPlayers();
-		
-		
+
+
 		if(line.charAt(0) == '0'){
 			System.out.println("Enter your name, player one:");
 			line = input.nextLine ().toLowerCase ();
@@ -137,8 +137,8 @@ public class GameFactory {
 		}
 		return Two.two(playerOne, playerTwo);
 	}
-	
-	
+
+
 	/**
 	 * Get a level for an AI playing using stdin.
 	 * @param player the AI playing
@@ -160,9 +160,9 @@ public class GameFactory {
 			return getAILevel(player);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Creates a new Game. Initializes it.
 	 */
@@ -172,7 +172,7 @@ public class GameFactory {
 		game.initGame(null);
 		game.play();
 	}
-	
+
 	/**
 	 * Creates a Game. Initializes it to the state given in the file.
 	 * @param fileName The name of the file from which the game will be loaded.
@@ -194,9 +194,9 @@ public class GameFactory {
 				System.out.println("Invalid sequence of moves in the file.");
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Creates a Game. Initializes it to the state given by a list of moves input in stdin.
 	 * @param moves The moves input to which the game should be initialized.
@@ -212,9 +212,9 @@ public class GameFactory {
 			System.out.println("This not a valid sequence of moves.");
 		}
 	}
-	
-	
-	
+
+
+
 
 	/**
 	 * Reads data from a given file.
@@ -222,22 +222,22 @@ public class GameFactory {
 	 * @return the first line from the file.
 	 */
 	public static String readFromFile(String fileName) {
-	    String DataLine = "";
-	    try {
-	      File inFile = new File(fileName);
-	      BufferedReader br = new BufferedReader(new InputStreamReader(
-	          new FileInputStream(inFile)));
+		String DataLine = "";
+		try {
+			File inFile = new File(fileName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					new FileInputStream(inFile)));
 
-	      DataLine = br.readLine();
-	      br.close();
-	    } catch (FileNotFoundException ex) {
-	    	System.out.println("This file cannot be found.");
-	      return (null);
-	    } catch (IOException ex) {
-	    	System.out.println("IO exception.");
-	      return (null);
-	    }
-	    return (DataLine);
+			DataLine = br.readLine();
+			br.close();
+		} catch (FileNotFoundException ex) {
+			System.out.println("This file cannot be found.");
+			return (null);
+		} catch (IOException ex) {
+			System.out.println("IO exception.");
+			return (null);
+		}
+		return (DataLine);
 
-	  }
+	}
 }

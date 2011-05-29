@@ -2,6 +2,16 @@ package quoridor;
 
 import java.util.Comparator;
 
+/**
+ * WeightedMoveComparator compares Weighted Moves based only on the weight
+ * 
+ * <h2>Implementation</h2>
+ * <ul>
+ * <li> Override the compare method to compare only the weight
+ * </ul>
+ */
+
+
 public class WeightedMoveComparator implements Comparator<WeightedMove>{
 
 	@Override

@@ -1,5 +1,17 @@
 package quoridor;
 
+/**
+ * WeightedMove extends move to add a gcost and hcost so that a move can be prioritised in a collection
+ * 
+ * The default equals method has been replaced with a method that uses the superclass Move's equals method
+ * 
+ * <h2>Implementation</h2>
+ * <ul>
+ * <li> Adds arguments to the constructor to set the weightings
+ * </ul>
+ */
+
+
 public class WeightedMove extends Move {
 	int gcost;
 	int hcost;

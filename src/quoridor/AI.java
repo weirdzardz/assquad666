@@ -186,10 +186,8 @@ public class AI {
 		for (int i = 0; i < moveList.size(); i++) {
 			Game tempGameTwo = createTempGame(moves);
 			tempGameTwo.move(moveList.get(i), tempGameTwo.myTurn());
-			System.out.println(tempGameTwo.moves);
 			
 			value = minValue(tempGameTwo.moves, currentSearchDepth + 1, alphaMax, betaMin);
-			System.out.println(value);
 			if (value > alphaMax) {
 				alphaMax = value;
 				bestMove = moveList.get(i);
@@ -255,18 +253,22 @@ public class AI {
 //		}
 		
 		if (player.equals(tempGame.players()._1())) {
-			value = 6*(tempGame.shortestPath(tempGame.players()._2()).size())
+			value = 1*(tempGame.shortestPath(tempGame.players()._2()).size())
 			- (tempGame.shortestPath(tempGame.players()._1()).size())
-			- wallDistance(moves.getLast(), tempGame, 0);
+			+ 1 * (tempGame.players()._1().wallsLeft() - 
+					tempGame.players()._2().wallsLeft());
+			//- wallDistance(moves.getLast(), tempGame, 0);
 		} else {
-			value = 6*(tempGame.shortestPath(tempGame.players()._1()).size())
+			value = 1*(tempGame.shortestPath(tempGame.players()._1()).size())
 			- (tempGame.shortestPath(tempGame.players()._2()).size())
-			- wallDistance(moves.getLast(), tempGame, 1);
+			+ 1 * (tempGame.players()._2().wallsLeft() - 
+					tempGame.players()._1().wallsLeft());
+			//- wallDistance(moves.getLast(), tempGame, 1);
 		}
 		
-		if (moves.getLast().direction() == MoveType.PAWN) {
-			value = value - 2;
-		}
+		//if (moves.getLast().direction() == MoveType.PAWN) {
+		//	value = value - 2;
+		//}
 		
 
 		return value;

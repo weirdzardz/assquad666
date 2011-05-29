@@ -474,7 +474,7 @@ public class Game {
 		if(players._1().type() == "Human")
 			line = players._1().name() + "(X) has "+players._1().wallsLeft()+" walls left to use.";
 		else
-			line = players._1().name() + "("+players._1().level()+")"+"(O) has "+players._1().wallsLeft()+" walls left to use.";
+			line = players._1().name() + "("+players._1().level()+")"+"(X) has "+players._1().wallsLeft()+" walls left to use.";
 		strings.add(line);
 		
 		if(players._2().type() == "Human")

@@ -30,7 +30,7 @@ public abstract class Player {
 	int wall = 10;
 	String level;
 	LinkedList<Point> positions = new LinkedList<Point>();
-	
+
 	/**
 	 * A Point representing the coordinates of the Pawn of a Player.
 	 * @return A Point representing the coordinates of the Pawn of a Player.
@@ -38,7 +38,7 @@ public abstract class Player {
 	public Point pawn(){
 		return this.pawn;
 	}
-	
+
 	/**
 	 * A String, the name of a Player.
 	 * @return A String, the name of a Player.
@@ -46,7 +46,7 @@ public abstract class Player {
 	public String name(){
 		return this.name;
 	}
-	
+
 	/**
 	 * The list of positions the player had during the game.
 	 * @return the list of positions the player had during the game
@@ -59,7 +59,7 @@ public abstract class Player {
 	 * @return A String, the type of Player this is.
 	 */
 	public abstract String type();
-	
+
 	/**
 	 * Represents the number of walls left a player can place.
 	 * @return the number of walls left a player can place
@@ -67,14 +67,14 @@ public abstract class Player {
 	public int wallsLeft() {
 		return wall;
 	}
-	
+
 	/**
 	 * Remove a wall from the player's stack because it has been placed.
 	 */
 	public void deductWall() {
 		wall--;
 	}
-	
+
 	/**
 	 * An integer, the straight line distance from the goal zone
 	 * @return An integer, the straight line distance from the goal zone
@@ -82,11 +82,11 @@ public abstract class Player {
 	public int goalDistance() {
 		return Math.abs(goal - pawn.y());
 	}
-	
+
 	public void setGoal(int goal) {
 		this.goal = goal;
 	}
-	
+
 	public int goal() {
 		return goal;
 	}
@@ -96,6 +96,6 @@ public abstract class Player {
 	 * @return the level of an AI player.
 	 */
 	public abstract String level();
-	
-	
+
+
 }

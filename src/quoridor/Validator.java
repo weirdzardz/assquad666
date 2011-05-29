@@ -28,16 +28,16 @@ import util.Two;
 
 public class Validator {
 
-	
+
 	Game game;
 	Player tempPl1 = new Human("Player 1");
 	Player tempPl2 = new Human("Player 2");
-	
+
 	public Validator () {
 		game = new Game(Two.two(tempPl1, tempPl2));
 		game.initGame(null);
 	}
-	
+
 	/**
 	 * Check the validity of a given sequence of moves.
 	 * The sequence is valid if and only if each (space separated)
@@ -65,7 +65,7 @@ public class Validator {
 			return false;
 		else
 			return check(c.moves());
-		
+
 	}
 
 	public boolean check(List<String> testMoves) {
@@ -77,6 +77,6 @@ public class Validator {
 		}
 		return check(new String(stringBuilder));
 	}
-	
+
 
 }

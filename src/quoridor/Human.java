@@ -21,7 +21,6 @@ package quoridor;
 public class Human extends Player{
 
 	public Human(String string) {
-		// TODO Auto-generated constructor stub
 		this.name =string;
 	}
 
@@ -32,7 +31,6 @@ public class Human extends Player{
 
 	@Override
 	public String level() {
-		// TODO Auto-generated method stub
 		return "noLevel";
 	}
 

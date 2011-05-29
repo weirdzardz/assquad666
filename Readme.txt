@@ -52,11 +52,6 @@ i.e. "new e8 e2 e7 e3 e2h"
 
 * "redo" can be used as many times as possible.
 
-Implementation of the Min-Max algorithm:
-
-	Go JO!
-
-
 
 Project Requirements Tick-off:
 
@@ -76,7 +71,7 @@ Project Requirements Tick-off:
 	
 		AI Total
 	* Naive AI..........................................done
-	* Good AI using min max.............................done
+	* Good AI using min max.............................?
 	* Game scoring function.............................done
 	*....???
 	

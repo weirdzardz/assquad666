@@ -32,8 +32,9 @@ Valid Commands:
 * "new" creates a new game.
 
 * A move can be made using the coordinates of a tile in the board starting with the
-letter, then the number, then a direction if it is a wall. A wall starts at the top
-left corner of the said tile, h is used for horizontal, v for vertical.
+letter, then the number, then a direction if it is a wall. A wall starts at the bottom
+left corner of the said tile for a horizontal wall and and the top right corner for a 
+vertical wall. h is used for horizontal, v for vertical.
 i.e. 	e2 moves a pawn to the e2 tile. 
 		e2h puts a wall horizontally starting at the top
 left corner of the e2 tile.

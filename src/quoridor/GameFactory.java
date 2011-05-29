@@ -51,8 +51,7 @@ public class GameFactory {
 	
 	
 	/**
-	 * Simply scan the stdin to get a line the user typed.
-	 * @return The String the user input in the command line.
+	 * runs the Game Factory by getting input, calling some parsing and calling appropriate functions.
 	 */
 	public static void run(){
 		Scanner input = new Scanner (System.in);

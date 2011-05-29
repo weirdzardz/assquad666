@@ -176,6 +176,7 @@ public class Game {
 	}
 	
 	/**
+	 * The winner of the Game.
 	 * @return The winner of the Game.
 	 */
 	public Player winner(){
@@ -187,6 +188,7 @@ public class Game {
 	}
 	
 	/**
+	 * The Loser of the Game.
 	 * @return The loser of the Game.
 	 */
 	public Player loser(){
@@ -581,9 +583,12 @@ public class Game {
 		if(move.direction().equals(MoveType.PAWN)){
 			Move temp = new Move(players().other(p).pawn().x(), players().other(p).pawn().y(), MoveType.PAWN);
 			if(oppositeBlocked(move,p)){
-				return isAdjacent(temp, p) && isAdjacent(move, players.other(p)) && isNotBlocked(move, players.other(p));
+				return isAdjacent(temp, p) 
+						&& isAdjacent(move, players.other(p)) 
+						&& isNotBlocked(move, players.other(p))
+						&& isNotBlocked(temp, p);
 			} else {
-				if(opposite(move,p)){
+				if(opposite(move,p) && isNotBlocked(temp, p)){
 					return true;
 				} else {
 					return false;

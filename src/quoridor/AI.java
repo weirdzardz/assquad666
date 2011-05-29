@@ -17,24 +17,24 @@ import util.Two;
  * <li>Generates random, naive, or pro moves.</li>
  * </ul> 
  * 
- * <h2>Implementation</h2>
- * <ul>
- * <li>To be done at some point.</li>
- * </ul>
- * 
- * 
- * @author Sacha BÅ½raud <sacha.beraud@gmail.com>
- *
  */
 
 public class AI {
 
 	Game game;
 
+	/**
+	 * Constructor for AI. It requireds type Game to be passed in.
+	 * @param game the game AI is required for.
+	 */
 	public AI(Game game){
 		this.game = game;
 	}
 
+	/**
+	 * Creates a move based on the required intelligence of the AI
+	 * @return a Move
+	 */
 	public Move createMove(){
 		Move move = null;
 
@@ -49,6 +49,10 @@ public class AI {
 		return move;
 	}
 
+	/**
+	 * Makes a random move out of all the possible moves
+	 * @return a Move
+	 */
 	private Move randomMove() {
 		ArrayList<Move> possibleMoves = findPossibleMoves(game);
 		Random randomGenerator = new Random();
@@ -57,19 +61,21 @@ public class AI {
 		return move;
 	}
 
+	/**
+	 * Makes a naive move based on the current state of the game using a heuristic
+	 * @return
+	 */
 	private Move naiveMove() {
 		ArrayList<Move> possibleMoves = findPossibleMoves(game);
 		Move move = null;
 		int myValue = game.shortestPath(game.myTurn()).size();
 		int playerShortestPath = game.shortestPath(game.players().other(game.myTurn())).size();
 
-		int highestValue = -999;
+		int highestValue = (int) Double.NEGATIVE_INFINITY;
 		int index = 0;
 		Random random = new Random();
 		//Find best move		
-//		System.out.println("My path = " + game.shortestPath(game.myTurn()));
-//		System.out.println("Their path = " + game.shortestPath(game.players.other(game.myTurn())));
-		
+
 		if (myValue >= playerShortestPath - 1 && game.myTurn().wallsLeft() != 0 
 				&& game.moves.size() > random.nextInt(4)) {
 			for (int i = 0; i < possibleMoves.size(); i++) {
@@ -84,6 +90,7 @@ public class AI {
 
 					int tempShortest = tempGame.shortestPath(tempGame.myTurn).size();
 					int myTempShortest = tempGame.shortestPath(tempGame.players.other(tempGame.myTurn)).size();
+					
 					//calculate value of each move
 					value = (tempGame.shortestPath(tempGame.myTurn).size())
 					- (myTempShortest - myValue)
@@ -91,13 +98,11 @@ public class AI {
 
 					if (playerShortestPath == tempShortest) {
 						if (myValue == myTempShortest) {
-							value = value* 1/40 - 20;
-						} else {
-							value = value - 4;
-						}
+							value = value * 1/2 - 20;
+							System.out.println(value);
+						} 
 					}
 
-					//if reduces shortest path ignore distance 
 					if (isAdjacent(possibleMoves.get(i))) {
 						value++;
 					}
@@ -114,22 +119,22 @@ public class AI {
 			if (!game.isValid(move, game.myTurn())) {
 				move = game.shortestPath(game.myTurn()).get(2);
 				if (!game.isValid(move, game.myTurn())) {
-					//find best move comparing shortest path 
+					//find best move by comparing shortest path 
 					Game tempGame = createTempGame(game.moves);
 					Game tempGameTwo = createTempGame(game.moves);
-					
+
 					Point p = game.myTurn().pawn();
 					Move tempMove = new Move(p.x() + 1, p.y(), MoveType.PAWN);
 					Move tempMoveTwo = new Move(p.x() - 1, p.y(), MoveType.PAWN);
-					
+
 					if (tempGame.isValid(tempMove, tempGame.myTurn())) {
 						move = tempMove;
 						if (tempGame.isValid(tempMoveTwo, tempGame.myTurn())) {
 							tempGame.move(tempMove, game.myTurn());
 							tempGameTwo.move(tempMoveTwo, game.myTurn());
-							
+
 							if (tempGame.shortestPath(tempGame.players().other(tempGame.myTurn())).size() <
-								tempGameTwo.shortestPath(tempGameTwo.players().other(tempGameTwo.myTurn())).size())	{
+									tempGameTwo.shortestPath(tempGameTwo.players().other(tempGameTwo.myTurn())).size())	{
 								move = tempMove;
 							} else {
 								move = tempMoveTwo;
@@ -145,13 +150,25 @@ public class AI {
 		return move;
 	}	
 
+	/**
+	 * Makes a move with alpha-beta pruning look ahead based on a heuristic
+	 * @return a Move
+	 */
 	private Move proMove() {
-		Pair<Integer, Move> result = maxValue(game.moves, 0, -999999, +999999);
+		Pair<Integer, Move> result = maxValue(game.moves, 0, (int) Double.NEGATIVE_INFINITY, (int) Double.POSITIVE_INFINITY);
 		return result._2();
 	}
 
-	private int desiredDepth = 2;
+	private int desiredDepth = 3;
 
+	/**
+	 * The first part of the alpha-beta pruning 
+	 * @param moves a list of all the moves made so far
+	 * @param currentSearchDepth the current depth of the search
+	 * @param alphaMax the max value of alpha
+	 * @param betaMin the minimum value of beta
+	 * @return a Pair of argument, the alpha value of the move and the move 
+	 */
 	private Pair<Integer, Move> maxValue(LinkedList<Move> moves, int currentSearchDepth, int alphaMax, int betaMin) {
 		Move bestMove = null;
 		int value;
@@ -188,6 +205,14 @@ public class AI {
 		return Pair.pair(alphaMax, bestMove);
 	}
 
+	/**
+	 * The second part of the alpha-beta pruning 
+	 * @param moves a list of all the moves made so far
+	 * @param currentSearchDepth the current depth of the search
+	 * @param alphaMax the max value of alpha
+	 * @param betaMin the minimum value of beta
+	 * @return the minimum value of beta of type int
+	 */
 	private int minValue(LinkedList<Move> moves, int currentSearchDepth, int alphaMax, int betaMin) {
 		Pair<Integer, Move> value = null;
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
@@ -215,6 +240,11 @@ public class AI {
 		return betaMin;
 	}
 
+	/**
+	 * Checks if the state of the moves is a winning game state
+	 * @param moves the list of all moves made so far
+	 * @return boolean true if it is a winning state, false if not
+	 */
 	private boolean isGoalState(LinkedList<Move> moves) {
 		for (int i = 0; i < 9; i++) {
 			if ((moves.getLast().coord().x() == i && moves.getLast().coord().y() == 1) 
@@ -226,6 +256,11 @@ public class AI {
 		return false;
 	}
 
+	/**
+	 * Checks if a wall placement is adjacent to a player
+	 * @param move the wall placement
+	 * @return true if it is adjacent, false if not
+	 */
 	private boolean isAdjacent(Move move) {
 		Point player = game.players().other(game.myTurn()).pawn();
 		int direction;
@@ -270,6 +305,11 @@ public class AI {
 		return false;
 	}
 
+	/**
+	 * Finds the distance of the wall placement to the opponent
+	 * @param move the placement of the wall
+	 * @return the int value of the straight line distance
+	 */
 	private int wallDistance(Move move) {
 		Point otherPlayer = game.players().other(game.myTurn()).pawn();
 
@@ -277,6 +317,11 @@ public class AI {
 				+ Math.pow((otherPlayer.y() - move.coord().y()), 2));
 	}
 
+	/**
+	 * Creates a copy of a game with the exact game state
+	 * @param moves the list of all moves made so far
+	 * @return a Game
+	 */
 	private Game createTempGame(LinkedList<Move> moves) {
 		Player tempPl1 = new Human("Player 1");
 		Player tempPl2 = new Human("Player 2");
@@ -290,6 +335,11 @@ public class AI {
 		return tempGame;
 	}
 
+	/**
+	 * Finds all the possible moves of the current player in a game
+	 * @param g the game - type Game
+	 * @return ArrayList of moves
+	 */
 	private ArrayList<Move> findPossibleMoves(Game g) {
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		ArrayList<Move> checkList = new ArrayList<Move>();

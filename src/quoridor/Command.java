@@ -142,6 +142,9 @@ public class Command {
 		}	
 	}
 
+	/**
+	 * Prints the Help for this game: a list of all the different available commands.
+	 */
 	private void printHelp() {
 		System.out.println("Quoridor Help");
 		System.out.println("Valid Commands:");
@@ -155,6 +158,11 @@ public class Command {
 
 	}
 
+	/**
+	 * Parses a word that is supposed to be a move from the whole string that Command receives.
+	 * @param bit the word/move to be parsed
+	 * @return A valid move (in terms of characters used).
+	 */
 	private Move parseBit(String bit) {
 			
 		if(bit.length() == 2){
@@ -192,58 +200,3 @@ public class Command {
 	
 	
 }
-
-
-
-
-
-/* backup
- * 
- * 
- * if(bit.length() == 2){
-			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
-				&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
-				return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.PAWN);
-			} else {
-				System.out.println(bit + " is not a valid move.");
-				return null;
-			}
-		} else if (bit.length() == 3){
-			if(Character.isLetter(bit.charAt(0)) && ((bit.charAt(0) - 'a') < size) 
-					&& Character.isDigit(bit.charAt(1)) && (bit.charAt(1) - '0' <= size && bit.charAt(1) - '0' > 0)){
-				if(bit.charAt(2) == 'h'){
-					if(bit.charAt(0) == 'i' || bit.charAt(1) == '1'){
-						System.out.println(bit + " is not a valid move.");
-						return null;
-					} else {
-						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.HORIZONTAL);
-					}
-				} else if(bit.charAt(2) == 'v'){
-					if(bit.charAt(1) == '9' || bit.charAt(0) == 'a'){
-						System.out.println(bit + " is not a valid move.");
-						return null;
-					} else {
-						return new Move(bit.charAt(0) - 'a', bit.charAt(1) - '0', MoveType.VERTICAL);
-					}
-				} else {
-					System.out.println(bit + " is not a valid move.");
-					return null;
-				}
-			} else {
-				System.out.println(bit + " is not a valid move.");
-				return null;
-			}
-			
-			
-		} else {
-			System.out.println(bit + " is not a valid command.");
-			return null;
-		}
-	}
- * 
- * 
- * 
- * 
- */
- 
-

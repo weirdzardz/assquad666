@@ -23,6 +23,7 @@ import util.Two;
  * <ul>
  * <li>Stores Games States.</li>
  * <li>Asks for input or asks for move generation to play Games.</li>
+ * <li>Initializes games with pre-validated list of moves.</li>
  * <li>Updates Game States (makes moves).</li>
  * <li>Plays Games.</li>
  * <li>Displays Games.</li>
@@ -31,8 +32,14 @@ import util.Two;
  * 
  * <h2>Implementation</h2>
  * <ul>
- * <li>See different functions for now. Implementation is not final yet, </li>
- * <li>so I'm waiting for something more stable before I feel comfortable talking about how this class is implemented.</li>
+ * <li>This class is instantiated with the two players playing as an argument.</li>
+ * <li>A game is initialized using the initGame() function.</li>
+ * <li>The Game is played using the play() function.</li>
+ * <li>A user is asked for a move input each turn using getInput().</li>
+ * <li>However, if a general command is input instead, the game is canceled and GameFactory is called to take care of this command.</li>
+ * <li>The Validity of a move is dealt with by the isValid() function.</li>
+ * <li>isValid() calls a lot of subfunctions to check for the different kind of valid moves there are..</li>
+ * <li>play() runs until isOver() returns true, which is when a player has won by reaching the other side of the board.</li>
  * </ul>
  * 
  * 
@@ -48,36 +55,52 @@ public class Game {
 	 * Players playing the Game
 	 */
 	public final Two <Player> players;
+	
+	//Player who's turn it is to play the game
 	public Player myTurn;
 	
+	//size of the board
 	int size = 9;
-	//boolean undoFlag;
 	
-	
+	//List of the walls that are placed on the board
 	LinkedList<Wall> walls = new LinkedList<Wall>();
+	//List of the moves that have been made on the board
 	LinkedList<Move> moves = new LinkedList<Move>();
+	//List of the moves that have been undone in the game
 	LinkedList<Move> redoMoves = new LinkedList<Move>();
 	
-	
-    public Two <Player> players ()
-    {
-        return players;
-    }
-	
-    public Player myTurn(){    	
-    	return myTurn;
-    }
-    
-    public void changeTurn(){
-    	myTurn = players.other(myTurn);
-    }
-    
 	/**
 	 * Constructor, creates the players based on names sent by factory.
 	 */
 	public Game(Two<Player> players){
 		this.players = players;
 	}
+	
+    /**
+     * The set of the two players in the game.
+     * @return The set of the two players in the game
+     */
+    public Two <Player> players ()
+    {
+        return players;
+    }
+	
+    /**
+     * The player playing this turn.
+     * @return the player playing this turn
+     */
+    public Player myTurn(){    	
+    	return myTurn;
+    }
+    
+    /**
+     * Change the player playing this turn.
+     */
+    public void changeTurn(){
+    	myTurn = players.other(myTurn);
+    }
+    
+
 	
 	
 	/**
@@ -142,19 +165,6 @@ public class Game {
 			
 		}	
 		return returnValue;
-	}
-	
-	
-
-	
-	
-	/**
-	 * Checks if a Game is new. not used for now.
-	 * @return True if this game is new, false otherwise.
-	 */
-	public boolean isNew(){
-		
-		return false;
 	}
 	
 	/**
@@ -223,6 +233,10 @@ public class Game {
 	}
 	
 	
+	/**
+	 * Undo a move a player has made if this player has actually already made a move.
+	 * @return true if undo was possible, false if not.
+	 */
 	public boolean undo(){
 		if(moves.size() > 0){
 			if(players.other(myTurn()).type().equals("AI")){
@@ -268,6 +282,10 @@ public class Game {
 		
 	}
 	
+	/**
+	 * Redo the last move that has been undone, if there is one.
+	 * @return true if it was possible to redo a move, false if not.
+	 */
 	public boolean redo(){
 		if(redoMoves.size() > 0){
 			if(players.other(myTurn()).type().equals("AI")){
@@ -405,6 +423,11 @@ public class Game {
 		return getInput();
 	}
 	
+	/**
+	 * Asks the user for confirmation when he tries to start another game while one is still running.
+	 * @param type the type of command that has been asked to do, in order to display the right message.
+	 * @return the answer of the user. true for yes, false for no
+	 */
 	public boolean YesNoPrompt(CommandType type){
 		Scanner input = new Scanner (System.in);	
 		
@@ -489,6 +512,15 @@ public class Game {
 			System.out.println(myString);
 		}	
 	}
+	
+	
+	/***********************************************************************
+	
+		Everything below are functions used for the validity of a move.
+	
+	************************************************************************/
+	
+	
 	
 	
 	

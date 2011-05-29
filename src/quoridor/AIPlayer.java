@@ -11,6 +11,7 @@ package quoridor;
  * <h2>Implementation</h2>
  * <ul>
  * <li>Simply Overrides the type() function defined in the Player class.</li>
+ * <li>Also has a level representing how smart its moves are going to be in the game.</li>
  * </ul>
  * 
  * 

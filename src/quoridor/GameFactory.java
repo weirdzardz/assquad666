@@ -37,12 +37,6 @@ import util.Two;
 
 public class GameFactory {
 	
-	
-//	final static Player playerOne = new Human("Player 1");
-//	final static Player playerTwo = new Human("Player 2");
-
-	
-	
 	/**
 	 * Main Function of the program. It's where it all start.
 	 * @param args Arguments passed to the main function of the program to trigger specific use of the program. Not used here.
@@ -89,7 +83,6 @@ public class GameFactory {
 			command = new Command(line);
 		}
 		
-		//while(players == null)
 			players = getPlayers();
 		
 		if(command.type().equals(CommandType.NEW_GAME)){
@@ -106,6 +99,10 @@ public class GameFactory {
 	}
 	
 	
+	/**
+	 * Get the players playing the game, as well as their type (AI or Human) and their name.
+	 * @return a set of Two Players
+	 */
 	public static Two<Player> getPlayers(){
 		Scanner input = new Scanner (System.in);
 		Player playerOne;
@@ -143,6 +140,11 @@ public class GameFactory {
 	}
 	
 	
+	/**
+	 * Get a level for an AI playing using stdin.
+	 * @param player the AI playing
+	 * @return a string representing the level of the AI: random, naive or pro.
+	 */
 	public static String getAILevel(int player){
 		Scanner input = new Scanner (System.in);
 		String line;

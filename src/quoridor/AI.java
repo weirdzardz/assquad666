@@ -22,6 +22,7 @@ import util.Two;
 public class AI {
 
 	Game game;
+	Player player;
 
 	/**
 	 * Constructor for AI. It requireds type Game to be passed in.
@@ -29,6 +30,7 @@ public class AI {
 	 */
 	public AI(Game game){
 		this.game = game;
+		player = game.myTurn();
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class AI {
 
 					int tempShortest = tempGame.shortestPath(tempGame.myTurn).size();
 					int myTempShortest = tempGame.shortestPath(tempGame.players.other(tempGame.myTurn)).size();
-					
+
 					//calculate value of each move
 					value = (tempGame.shortestPath(tempGame.myTurn).size())
 					- (myTempShortest - myValue)
@@ -158,7 +160,7 @@ public class AI {
 		return result._2();
 	}
 
-	private int desiredDepth = 3;
+	private int desiredDepth = 2;
 
 	/**
 	 * The first part of the alpha-beta pruning 
@@ -172,13 +174,10 @@ public class AI {
 		Move bestMove = null;
 		int value;
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
-
-			//****************************** Needs implementing ******************************//
-			/**/ 	Random random = new Random();											/**/
-			/**/	ArrayList<Move> m = findPossibleMoves(game);							/**/
-			/**/	return Pair.pair(random.nextInt(1000), m.get(random.nextInt(m.size())));/**/
-			/**/    //return Heuristic(state), any move										/**/
-			//********************************************************************************//
+			Game tempGame = createTempGame(moves);
+			ArrayList<Move> m = findPossibleMoves(tempGame);
+			//any move?
+			return Pair.pair(heuristic(moves), m.get(0));					
 		}
 
 		Game tempGame = createTempGame(moves);
@@ -215,12 +214,7 @@ public class AI {
 	private int minValue(LinkedList<Move> moves, int currentSearchDepth, int alphaMax, int betaMin) {
 		Pair<Integer, Move> value = null;
 		if (currentSearchDepth == desiredDepth || isGoalState(moves)) {
-			//********** Needs implementing **********//
-			/**/ //return heuristic(state)			/**/
-			/**/ Random random = new Random();		/**/
-			/**/									/**/
-			/**/ return random.nextInt(1000);		/**/
-			//****************************************//
+			return heuristic(moves); 
 		}
 
 		Game tempGame = createTempGame(moves);
@@ -246,17 +240,32 @@ public class AI {
 	 */
 	private int heuristic(LinkedList<Move> moves) {
 		int value = 0;
+		int C1 = 8;
+		int C2 = 4;
+		int C3 = 5;
+		int C4 = 1;
+		int C5 = 2;
+		int C6 = 2;
 		
+		//who is "my" and how to refer to it. Might be wrong here
+
+		Game tempGame = createTempGame(moves);
+		int opponentShortestPath = tempGame.shortestPath(tempGame.myTurn()).size();
+		int myShortestPath = tempGame.shortestPath(tempGame.players().other(tempGame.myTurn())).size();
+		int opponentFences = tempGame.myTurn().wallsLeft();
+		int myFences = tempGame.players().other(tempGame.myTurn()).wallsLeft();
 		
+		value = C1 * (C2* myShortestPath - C3*opponentShortestPath) + C4 *(C5*myFences-C6*opponentFences);
 		return value;
 	}
+
 	/**
 	 * Checks if the state of the moves is a winning game state
 	 * @param moves the list of all moves made so far
 	 * @return boolean true if it is a winning state, false if not
 	 */
 	private boolean isGoalState(LinkedList<Move> moves) {
-		
+
 		if (!moves.isEmpty()) {
 			for (int i = 0; i < 9; i++) {
 				if ((moves.getLast().coord().x() == i && moves.getLast().coord().y() == 1) 
@@ -265,7 +274,7 @@ public class AI {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 

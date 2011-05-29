@@ -99,7 +99,6 @@ public class AI {
 					if (playerShortestPath == tempShortest) {
 						if (myValue == myTempShortest) {
 							value = value * 1/2 - 20;
-							System.out.println(value);
 						} 
 					}
 
@@ -241,18 +240,32 @@ public class AI {
 	}
 
 	/**
+	 * The heuristic for alpha-beta pruning
+	 * @param moves a list of all the moves played so far
+	 * @return an int, the heuristic value of a move
+	 */
+	private int heuristic(LinkedList<Move> moves) {
+		int value = 0;
+		
+		
+		return value;
+	}
+	/**
 	 * Checks if the state of the moves is a winning game state
 	 * @param moves the list of all moves made so far
 	 * @return boolean true if it is a winning state, false if not
 	 */
 	private boolean isGoalState(LinkedList<Move> moves) {
-		for (int i = 0; i < 9; i++) {
-			if ((moves.getLast().coord().x() == i && moves.getLast().coord().y() == 1) 
-					|| (moves.getLast().coord().x() == i && moves.getLast().coord().y() == 9)) {
-				return true;
+		
+		if (!moves.isEmpty()) {
+			for (int i = 0; i < 9; i++) {
+				if ((moves.getLast().coord().x() == i && moves.getLast().coord().y() == 1) 
+						|| (moves.getLast().coord().x() == i && moves.getLast().coord().y() == 9)) {
+					return true;
+				}
 			}
 		}
-
+		
 		return false;
 	}
 

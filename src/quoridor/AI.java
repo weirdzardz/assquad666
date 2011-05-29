@@ -146,8 +146,8 @@ public class AI {
 	}	
 
 	private Move proMove() {
-		maxValue(game.moves, 0, -999999, +999999);
-		return null;
+		Pair<Integer, Move> result = maxValue(game.moves, 0, -999999, +999999);
+		return result._2();
 	}
 
 	private int desiredDepth = 2;
